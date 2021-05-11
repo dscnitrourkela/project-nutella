@@ -1,4 +1,11 @@
 # project-nutella
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+[![Starware](https://img.shields.io/badge/Starware-⭐-black?labelColor=f9b00d)](https://github.com/zepfietje/starware)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 
 <br />
 <p align="center">
@@ -47,9 +54,8 @@
 
 ## About The Project
 
-Project developed and maintained by <a href="https://dscnitrourkela.org">DSC NIT
-Rourkela</a>
-[![dsc nit rourkela][https://github.com/dscnitrourkela/project-nutella/images/cover.png]](https://dscnitrourkela.org)
+Project developed and maintained by [DSC NIT Rourkela](https://dscnitrourkela.org/)
+![DSC NIT Rourkela Cover Image](./images/cover.png)
 
 The backend repository for an online quizzing platform (Apti-Che) to be used by
 the members of AICHE NIT Rourkela.
