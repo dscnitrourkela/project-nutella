@@ -49,7 +49,7 @@
 
 Project developed and maintained by <a href="https://dscnitrourkela.org">DSC NIT
 Rourkela</a>
-[![Product Name Screen Shot][product-screenshot]](https://github.com/dscnitrourkela/project-nutella/images/cover.png)
+[![dsc nit rourkela][https://github.com/dscnitrourkela/project-nutella/images/cover.png]](https://dscnitrourkela.org)
 
 The backend repository for an online quizzing platform (Apti-Che) to be used by
 the members of AICHE NIT Rourkela.
