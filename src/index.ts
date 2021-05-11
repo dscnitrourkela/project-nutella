@@ -1,21 +1,21 @@
-import "reflect-metadata";
-import "dotenv/config";
+/* eslint-disable no-console */
+import 'reflect-metadata';
+import 'dotenv/config';
 
 // Libraries
-import { ApolloServer } from "apollo-server-express";
-import express from "express";
-import cors from "cors";
+import {ApolloServer} from 'apollo-server-express';
+import express from 'express';
+import cors from 'cors';
 
 // Config
-import { init as initMongoose } from "./config/mongoose";
-import { CORS_OPTIONS } from "./config/cors";
+import {init as initMongoose} from './config/mongoose';
+import {CORS_OPTIONS} from './config/cors';
 
 // Schema
-import { schema } from "./schema";
+import {schema} from './schema';
 
 // Constants
-import { PORT, IS_PROD } from "./constants";
-// @ts-ignore
+import {PORT, IS_PROD} from './constants';
 
 (async () => {
   initMongoose();
@@ -34,10 +34,7 @@ import { PORT, IS_PROD } from "./constants";
     cors: CORS_OPTIONS,
   });
 
-  // @ts-ignore
-  app.listen(PORT, (err: any) => {
-    if (err) console.error(`Express Server Error on Port ${PORT}`, err);
-
-    console.info(`Express Server Started on Port ${PORT}`);
-  });
+  app.listen(PORT, () =>
+    console.info(`Express Server Started on Port ${PORT}`),
+  );
 })();
