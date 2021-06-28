@@ -4,9 +4,6 @@ import mongoose from 'mongoose';
 // Utils
 import winston from './winston';
 
-// Constants
-import {MONGO_APP_URL} from '../constants';
-
 const logger = winston('Mongoose');
 
 // Initialize Mongoose Connection
@@ -18,7 +15,8 @@ export const init = async (): Promise<void> => {
     useFindAndModify: false,
     useCreateIndex: true,
   };
-  await mongoose.connect(MONGO_APP_URL!, MONGOOSE_OPTIONS);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  await mongoose.connect(process.env.MONGO_APP_URL!, MONGOOSE_OPTIONS);
 
   const db = mongoose.connection;
 
