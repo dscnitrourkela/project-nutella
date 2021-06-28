@@ -1,5 +1,6 @@
-import { IS_PROD, PROD_ORIGIN, DEV_ORIGIN } from "./../constants";
+import {IS_PROD, PROD_ORIGIN, DEV_ORIGIN} from '../constants';
 
-export const CORS_OPTIONS = {
+export default {
   origin: IS_PROD ? PROD_ORIGIN : DEV_ORIGIN,
+  credentials: true,
 };

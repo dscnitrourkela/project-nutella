@@ -9,7 +9,7 @@ import cors from 'cors';
 // Config
 import {init as initMongoose} from './config/mongoose';
 import {init as initFirebase} from './config/firebase';
-import {CORS_OPTIONS} from './config/cors';
+import CORS_OPTIONS from './config/cors';
 
 // Schema
 import {schema} from './schema';
