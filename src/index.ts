@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import 'reflect-metadata';
 import 'dotenv/config';
 
@@ -15,10 +14,14 @@ import {CORS_OPTIONS} from './config/cors';
 // Schema
 import {schema} from './schema';
 
+// Utils
+import winston from './config/winston';
+
 // Constants
 import {PORT, IS_PROD} from './constants';
 
 (async () => {
+  const logger = winston('Express');
   initMongoose();
   initFirebase();
 
@@ -36,7 +39,5 @@ import {PORT, IS_PROD} from './constants';
     cors: CORS_OPTIONS,
   });
 
-  app.listen(PORT, () =>
-    console.info(`Express Server Started on Port ${PORT}`),
-  );
+  app.listen(PORT, () => logger.info(`Server Started on Port ${PORT}`));
 })();

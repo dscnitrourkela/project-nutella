@@ -1,6 +1,11 @@
 // Libraries
 import admin from 'firebase-admin';
 
+// Utils
+import winston from './winston';
+
+const logger = winston('Firebase');
+
 // Initialize Firebase Admin SDK
 export const init = (): void => {
   try {
@@ -20,9 +25,9 @@ export const init = (): void => {
       credential: admin.credential.cert(serviceAccount),
     });
 
-    console.log('Firebase Admin Initialized');
+    logger.info('Admin Initialized');
   } catch (error) {
-    console.log('Firebase Admin Initialization failed: ', error);
+    logger.error('Admin Initialization failed: ', error);
   }
 };
 
