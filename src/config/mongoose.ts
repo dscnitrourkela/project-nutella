@@ -1,8 +1,8 @@
 // Libraries
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 // Constants
-import { MONGO_APP_URL } from "../constants";
+import {MONGO_APP_URL} from '../constants';
 
 // Initialize Mongoose Connection
 export const init = async () => {
@@ -17,8 +17,8 @@ export const init = async () => {
 
   const db = mongoose.connection;
 
-  db.on("error", (err) => console.error("Could not connect to database", err));
-  db.once("open", () => console.info("Database Connected"));
+  db.on('error', err => console.error('Could not connect to database', err));
+  db.once('open', () => console.info('Database Connected'));
 };
 
 // Check mongoose connection
