@@ -9,6 +9,7 @@ import cors from 'cors';
 
 // Config
 import {init as initMongoose} from './config/mongoose';
+import {init as initFirebase} from './config/firebase';
 import {CORS_OPTIONS} from './config/cors';
 
 // Schema
@@ -19,6 +20,7 @@ import {PORT, IS_PROD} from './constants';
 
 (async () => {
   initMongoose();
+  initFirebase();
 
   const app = express();
   app.use(cors(CORS_OPTIONS));
