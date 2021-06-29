@@ -4,9 +4,12 @@ import {Field, ObjectType, ID} from 'type-graphql';
 import {prop as Property, getModelForClass} from '@typegoose/typegoose';
 import {ObjectId} from 'mongodb';
 
+// Models
+import {QuizModel, Quiz} from '../quiz/quiz.model';
+
 @ObjectType({description: 'The User Model'})
 export class User {
-  @Field(() => ID, {description: 'MongoDB ObjectID'})
+  @Field(() => ID, {description: 'User MongoDB ObjectID'})
   id: ObjectId;
 
   @Property({required: true, trim: true})
@@ -43,10 +46,13 @@ export class User {
   uid: string;
 
   @Property({default: []})
-  @Field({description: 'An array of IDs of the quiz'})
+  @Field(() => [String], {
+    description: 'An array of IDs of the quiz',
+    name: 'questionIds',
+  })
   quiz: string[];
 
-  // Todo resolve the quiz from the id after creation of quiz model
+  // TODO: resolve the quiz IDs into quizzes after creation of quiz model
 }
 
 export const UserModel = getModelForClass(User);
