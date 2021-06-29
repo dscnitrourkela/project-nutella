@@ -1,9 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // Libraries
 import {Field, ObjectType, ID} from 'type-graphql';
-import {prop as Property, getModelForClass} from '@typegoose/typegoose';
+import {
+  prop as Property,
+  getModelForClass,
+  modelOptions,
+} from '@typegoose/typegoose';
 import {ObjectId} from 'mongodb';
 
+@modelOptions({options: {allowMixed: 0}})
 @ObjectType({description: 'The Question Model'})
 export class Question {
   @Field(() => ID, {description: 'Question MongoDB ObjectID'})
@@ -37,7 +42,7 @@ export class Question {
 
   @Property({required: true, trim: true})
   @Field({description: 'Explanation of the answer for the question'})
-  explanation: number;
+  explanation: string;
 }
 
 export const QuestionModel = getModelForClass(Question);
