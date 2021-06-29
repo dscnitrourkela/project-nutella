@@ -1,12 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // Libraries
 import {Field, ObjectType, ID} from 'type-graphql';
-import {prop as Property, getModelForClass} from '@typegoose/typegoose';
+import {
+  prop as Property,
+  getModelForClass,
+  modelOptions,
+} from '@typegoose/typegoose';
 import {ObjectId} from 'mongodb';
 
 // Models
 import {QuizModel, Quiz} from '../quiz/quiz.model';
 
+@modelOptions({options: {allowMixed: 0}})
 @ObjectType({description: 'The User Model'})
 export class User {
   @Field(() => ID, {description: 'User MongoDB ObjectID'})
@@ -48,11 +52,23 @@ export class User {
   @Property({default: []})
   @Field(() => [String], {
     description: 'An array of IDs of the quiz',
-    name: 'questionIds',
+    name: 'quizIds',
   })
-  quiz: string[];
+  quizzes: string[];
 
-  // TODO: resolve the quiz IDs into quizzes after creation of quiz model
+  @Field(() => [Quiz], {
+    description: 'An array containing the details of all the quizzes',
+    name: 'quizzes',
+  })
+  async quizzesArray(): Promise<(Quiz | null)[]> {
+    try {
+      return await Promise.all(
+        this.quizzes.map(async quizId => QuizModel.findById(quizId)),
+      );
+    } catch (error) {
+      return error;
+    }
+  }
 }
 
 export const UserModel = getModelForClass(User);

@@ -1,9 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // Libraries
 import {Field, ObjectType, ID, GraphQLISODateTime} from 'type-graphql';
-import {prop as Property, getModelForClass} from '@typegoose/typegoose';
+import {
+  prop as Property,
+  getModelForClass,
+  modelOptions,
+} from '@typegoose/typegoose';
 import {ObjectId} from 'mongodb';
 
+// Models
+import {Question, QuestionModel} from '../question/question.model';
+
+@modelOptions({options: {allowMixed: 0}})
 @ObjectType({description: 'The Quiz model'})
 export class Quiz {
   @Field(() => ID, {description: 'Quiz MongoDB ObjectID'})
@@ -24,10 +31,24 @@ export class Quiz {
   @Property({default: []})
   @Field(() => [String], {
     description: 'An array containing the IDs of the questions',
+    name: 'questionIds',
   })
   questions: string[];
 
-  // TODO: resolve the question IDs into questions after creation of questions model
+  @Field(() => [Question], {
+    description:
+      'An array containing the details of all the questions in this quiz.',
+    name: 'questions',
+  })
+  async questionsArray(): Promise<(Question | null)[]> {
+    try {
+      return await Promise.all(
+        this.questions.map(questionId => QuestionModel.findById(questionId)),
+      );
+    } catch (error) {
+      return error;
+    }
+  }
 
   @Property({default: []})
   @Field(() => [String], {
