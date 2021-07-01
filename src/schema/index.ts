@@ -1,11 +1,13 @@
 // Libraries
 import {buildSchema} from 'type-graphql';
+import {ObjectId} from 'mongodb';
 
 // Resolvers
 import UserResolvers from './user/user.resolver';
 
-// Middlewares
+// Middlewares + Utils
 import {TypegooseMiddleware} from '../config/typegoose';
+import {ObjectIdScalar} from './scalars';
 
 const resolvers = [UserResolvers] as const;
 
@@ -13,5 +15,6 @@ const resolvers = [UserResolvers] as const;
 export const schema = buildSchema({
   resolvers,
   globalMiddlewares: [TypegooseMiddleware],
+  scalarsMap: [{type: ObjectId, scalar: ObjectIdScalar}],
   validate: false,
 });
