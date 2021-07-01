@@ -7,9 +7,6 @@ import {
 } from '@typegoose/typegoose';
 import {ObjectId} from 'mongodb';
 
-// Models
-// import {QuizModel, Quiz} from '../quiz/quiz.model';
-
 @modelOptions({options: {allowMixed: 0}})
 @ObjectType({description: 'The User Model'})
 export class User {
@@ -26,7 +23,7 @@ export class User {
     trim: true,
     lowercase: true,
     match:
-      /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@gmail(.([^<>()[\].,;:\s@"]{2,})){1,}$/i,
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
   })
   @Field({description: 'Unique email of the user'})
   email: string;
@@ -55,20 +52,6 @@ export class User {
     name: 'quizIds',
   })
   quizzes: string[];
-
-  // @Field(() => [Quiz], {
-  //   description: 'An array containing the details of all the quizzes',
-  //   name: 'quizzes',
-  // })
-  // async quizzesArray(): Promise<(Quiz | null)[]> {
-  //   try {
-  //     return await Promise.all(
-  //       this.quizzes.map(async quizId => QuizModel.findById(quizId)),
-  //     );
-  //   } catch (error) {
-  //     return error;
-  //   }
-  // }
 }
 
 export const UserModel = getModelForClass(User);
