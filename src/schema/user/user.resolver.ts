@@ -1,8 +1,9 @@
 // Libraries
-import {Resolver, Query} from 'type-graphql';
+import {Resolver, Query, FieldResolver, Root} from 'type-graphql';
 
 // Model
 import {User, UserModel} from './user.model';
+import {Quiz, QuizModel} from '../quiz/quiz.model';
 
 @Resolver(() => User)
 export default class UserResolvers {
@@ -10,6 +11,20 @@ export default class UserResolvers {
   async getUsers(): Promise<User[]> {
     try {
       return await UserModel.find({});
+    } catch (error) {
+      return error;
+    }
+  }
+
+  @FieldResolver(() => [Quiz], {name: 'quizzes'})
+  async quizzesArray(@Root() user: User): Promise<(Quiz | null)[]> {
+    try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      console.log(user?.name);
+      return await Promise.all(
+        user.quizzes.map(async quizId => QuizModel.findById(quizId)),
+      );
     } catch (error) {
       return error;
     }
