@@ -10,16 +10,16 @@ const logger = winston('Firebase');
 export const init = (): void => {
   try {
     const serviceAccount = {
-      type: process.env.type,
-      projectId: process.env.project_id,
-      privateKeyId: process.env.private_key_id,
-      privateKey: process.env.private_key,
-      clientEmail: process.env.client_email,
-      clientId: process.env.client_id,
-      authUri: process.env.auth_uri,
-      tokenUri: process.env.token_uri,
-      authProviderX509CertUrl: process.env.auth_provider_x509_cert_url,
-      clientC509CertUrl: process.env.client_x509_cert_url,
+      type: process.env.TYPE,
+      projectId: process.env.PROJECT_ID,
+      privateKeyId: process.env.PRIVATE_KEY_ID,
+      privateKey: process.env.PRIVATE_KEY,
+      clientEmail: process.env.CLIENT_EMAIL,
+      clientId: process.env.CLIENT_ID,
+      authUri: process.env.AUTH_URI,
+      tokenUri: process.env.TOKEN_URI,
+      authProviderX509CertUrl: process.env.AUTH_PROVIDER_X509_CERT_URL,
+      clientC509CertUrl: process.env.CLIENT_X509_CERT_URL,
     };
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
