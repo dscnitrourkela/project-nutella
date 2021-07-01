@@ -8,7 +8,7 @@ import {
 import {ObjectId} from 'mongodb';
 
 // Models
-import {QuizModel, Quiz} from '../quiz/quiz.model';
+// import {QuizModel, Quiz} from '../quiz/quiz.model';
 
 @modelOptions({options: {allowMixed: 0}})
 @ObjectType({description: 'The User Model'})
@@ -56,19 +56,19 @@ export class User {
   })
   quizzes: string[];
 
-  @Field(() => [Quiz], {
-    description: 'An array containing the details of all the quizzes',
-    name: 'quizzes',
-  })
-  async quizzesArray(): Promise<(Quiz | null)[]> {
-    try {
-      return await Promise.all(
-        this.quizzes.map(async quizId => QuizModel.findById(quizId)),
-      );
-    } catch (error) {
-      return error;
-    }
-  }
+  // @Field(() => [Quiz], {
+  //   description: 'An array containing the details of all the quizzes',
+  //   name: 'quizzes',
+  // })
+  // async quizzesArray(): Promise<(Quiz | null)[]> {
+  //   try {
+  //     return await Promise.all(
+  //       this.quizzes.map(async quizId => QuizModel.findById(quizId)),
+  //     );
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // }
 }
 
 export const UserModel = getModelForClass(User);

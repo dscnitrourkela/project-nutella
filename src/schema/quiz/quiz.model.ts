@@ -10,7 +10,7 @@ import {ObjectId} from 'mongodb';
 // Models
 import {Question, QuestionModel} from '../question/question.model';
 
-@modelOptions({options: {allowMixed: 0}})
+@modelOptions({options: {allowMixed: 0, customName: 'quizzes'}})
 @ObjectType({description: 'The Quiz model'})
 export class Quiz {
   @Field(() => ID, {description: 'Quiz MongoDB ObjectID'})
