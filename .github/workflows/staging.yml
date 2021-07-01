@@ -44,11 +44,12 @@ jobs:
           echo PROJECT_ID=$PROJECT_ID >> .env
           echo PROJECT_ID=$PROJECT_ID >> .env
           echo PRIVATE_KEY_ID=$PRIVATE_KEY_ID >> .env
-          echo PRIVATE_KEY=$PRIVATE_KEY >> .env
+          echo PRIVATE_KEY="${{PRIVATE_KEY}}" >> .env
           echo PORT=$PORT >> .env
           echo MONGO_APP_URL=$MONGO_APP_URL >> .env
           echo CLIENT_X509_CERT_URL=$CLIENT_X509_CERT_URL >> .env
           echo CLIENT_EMAIL=$CLIENT_EMAIL >> .env
           cat .env
       - run: yarn
+      - run: tsc
       - run: pm2 restart staging
