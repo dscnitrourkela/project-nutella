@@ -6,6 +6,6 @@
     "src/types/**/*.d.ts",
 
     // these are the eslint-only inclusions
-    ".eslintrc.js",
+    ".eslintrc.js"
   ]
 }

@@ -2,7 +2,7 @@ name: Staging Deploy
 
 on:
   push:
-  
+
 env:
   AUTH_PROVIDER_X509_CERT_URL: ${{secrets.AUTH_PROVIDER_X509_CERT_URL}}
   AUTH_URI: ${{secrets.AUTH_URI}}
@@ -15,14 +15,14 @@ env:
   MONGO_APP_URL: ${{secrets.MONGO_APP_URL}}
   CLIENT_X509_CERT_URL: ${{secrets.CLIENT_X509_CERT_URL}}
   CLIENT_EMAIL: ${{secrets.CLIENT_EMAIL}}
-  
+
 jobs:
   staging-deploy:
     runs-on: [self-hosted, aptiche-do]
     defaults:
       run:
         shell: bash
-        
+
     strategy:
       matrix:
         node-version: [14.x]

@@ -1,11 +1,14 @@
 # project-nutella
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Starware](https://img.shields.io/badge/Starware-⭐-black?labelColor=f9b00d)](https://github.com/zepfietje/starware)
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
 <br />
 <p align="center">
@@ -54,7 +57,8 @@
 
 ## About The Project
 
-Project developed and maintained by [DSC NIT Rourkela](https://dscnitrourkela.org/)
+Project developed and maintained by
+[DSC NIT Rourkela](https://dscnitrourkela.org/)
 ![DSC NIT Rourkela Cover Image](./images/cover.png)
 
 The backend repository for an online quizzing platform (Apti-Che) to be used by
@@ -174,6 +178,7 @@ grow and glow up. ⭐
 ## Contributors ✨
 
 Thanks goes to these wonderful people
+
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -188,8 +193,8 @@ Thanks goes to these wonderful people
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
+([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 This project follows the
 [all-contributors](https://github.com/all-contributors/all-contributors)

@@ -19,9 +19,6 @@ export default class UserResolvers {
   @FieldResolver(() => [Quiz], {name: 'quizzes'})
   async quizzesArray(@Root() user: User): Promise<(Quiz | null)[]> {
     try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      console.log(user?.name);
       return await Promise.all(
         user.quizzes.map(async quizId => QuizModel.findById(quizId)),
       );
