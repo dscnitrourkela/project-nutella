@@ -1,6 +1,6 @@
 # project-nutella
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Starware](https://img.shields.io/badge/Starware-⭐-black?labelColor=f9b00d)](https://github.com/zepfietje/starware)
@@ -180,6 +180,7 @@ Thanks goes to these wonderful people
 <table>
   <tr>
     <td align="center"><a href="http://riteshpatil.dev"><img src="https://avatars.githubusercontent.com/u/56112399?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ritesh Patil</b></sub></a><br /><a href="https://github.com/dscnitrourkela/project-nutella/commits?author=riteshsp2000" title="Code">💻</a> <a href="#ideas-riteshsp2000" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-riteshsp2000" title="Maintenance">🚧</a> <a href="#projectManagement-riteshsp2000" title="Project Management">📆</a></td>
+    <td align="center"><a href="https://abhibhaw.co"><img src="https://avatars.githubusercontent.com/u/39991296?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Abhibhaw Asthana</b></sub></a><br /><a href="https://github.com/dscnitrourkela/project-nutella/commits?author=abhibhaw" title="Code">💻</a> <a href="#maintenance-abhibhaw" title="Maintenance">🚧</a> <a href="#security-abhibhaw" title="Security">🛡️</a></td>
   </tr>
 </table>
 
