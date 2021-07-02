@@ -1,5 +1,6 @@
 {
   "extends": "./tsconfig.json",
+  "exclude": ["ecosystem.config.js"],
   "include": [
     // repeated from base config's "include" setting
     "src",
