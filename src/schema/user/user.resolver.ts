@@ -16,15 +16,20 @@ import {Quiz, QuizModel} from '../quiz/quiz.model';
 // Utils + Types
 import {ObjectIdScalar} from '../scalars';
 import {UserInput} from './user.types';
+import getUpdateObject from '../../utils/getUpdateObject';
 
 @Resolver(() => User)
 export default class UserResolvers {
   @FieldResolver(() => [Quiz], {name: 'quizzes'})
   async quizzesArray(@Root() user: User): Promise<(Quiz | null)[]> {
     try {
-      return await Promise.all(
-        user.quizzes.map(async quizId => QuizModel.findById(quizId)),
-      );
+      if (user.quizzes.length > 0) {
+        return await Promise.all(
+          user.quizzes.map(async quizId => QuizModel.findById(quizId)),
+        );
+      }
+
+      return [];
     } catch (error) {
       return error;
     }
@@ -55,7 +60,7 @@ export default class UserResolvers {
   }
 
   /*
-    createUser mutations takes an object of user properties as a parameter and creates a new user.
+    createUser mutation takes an object of user properties as a parameter and creates a new user.
     The created user is then returned
   */
   @Mutation(() => User)
@@ -63,7 +68,7 @@ export default class UserResolvers {
     // TODO: Use context to allow requests only with the role of user to proceed ahead
 
     // TODO: Extract user uid from the Context
-    let uid;
+    const uid = 'jadfomewodkljfalkfh';
 
     const {name, email, phoneNo, rollNo, fcmToken, quizzes} = userDetails;
 
@@ -72,7 +77,7 @@ export default class UserResolvers {
     }
 
     try {
-      const user = new UserModel({
+      return await UserModel.create({
         name,
         email,
         phoneNo,
@@ -81,8 +86,50 @@ export default class UserResolvers {
         uid,
         quizzes: quizzes.length > 0 ? quizzes : [],
       });
+    } catch (error) {
+      return error;
+    }
+  }
 
-      return await user.save();
+  /**
+   * updateUser mutation takes an object of user properties as a parameter, the id of the user
+   * to be updated and updates the user.
+   * The updated user is then returned.
+   */
+  @Mutation(() => User)
+  async updateUser(
+    @Arg('userDetails') userDetails: UserInput,
+    @Arg('userId', () => ObjectIdScalar) userId: ObjectID,
+  ): Promise<User | null> {
+    // TODO: Use context to allow requests only with the role of user to proceed ahead
+
+    try {
+      const updatedUser = getUpdateObject(userDetails);
+      const existingUser = await UserModel.findById(userId);
+
+      if (!existingUser) {
+        throw new Error('Bad Request: User not found');
+      }
+
+      return await UserModel.findByIdAndUpdate(userId, {
+        $set: {
+          ...existingUser,
+          ...updatedUser,
+        },
+      });
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
+   * deleterUser mutation takes in a userId parameter and deletes the corresponding user.
+   */
+  @Mutation(() => User)
+  async deleteUser(@Arg('userId') userId: ObjectID): Promise<User | null> {
+    // TODO: Use context to allow requests only with the role of user to proceed ahead
+    try {
+      return await UserModel.findByIdAndDelete(userId);
     } catch (error) {
       return error;
     }

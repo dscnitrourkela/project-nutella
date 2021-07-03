@@ -11,7 +11,7 @@ import {ObjectId} from 'mongodb';
 @ObjectType({description: 'The User Model'})
 export class User {
   @Field(() => ID, {description: 'User MongoDB ObjectID'})
-  id: ObjectId;
+  _id: ObjectId;
 
   @Property({required: true, trim: true})
   @Field({description: 'Name of the user'})
@@ -42,8 +42,9 @@ export class User {
   })
   fcmToken: string[];
 
-  @Property({required: true, unique: true})
-  @Field({description: 'Firebase ID of the user'})
+  // TODO: Remove the nullable field, add unique
+  @Property({required: true})
+  @Field({description: 'Firebase ID of the user', nullable: true})
   uid: string;
 
   @Property({default: []})
