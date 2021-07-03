@@ -1,29 +1,29 @@
 // Libraries
 import {
   Resolver,
-  // Query,
+  Query,
   FieldResolver,
   Root,
-  // Arg,
+  Arg,
   // Mutation,
 } from 'type-graphql';
-// import {ObjectID} from 'mongodb';
+import {ObjectID} from 'mongodb';
 
 // Model
-import {
-  Quiz,
-  // QuizModel
-} from './quiz.model';
+import {Quiz, QuizModel} from './quiz.model';
 import {Question, QuestionModel} from '../question/question.model';
 import {UserModel} from '../user/user.model';
 
 // Utils + Types
-// import {ObjectIdScalar} from '../scalars';
+import {ObjectIdScalar} from '../scalars';
 import {SubmissionType} from './quiz.type';
 // import getUpdateObject from '../../utils/getUpdateObject';
 
 @Resolver(() => Quiz)
 export default class QuizResolvers {
+  /**
+   * Resolves the question ids stored in MongoDB into question documents.
+   */
   @FieldResolver(() => [Question], {
     name: 'questions',
     description:
@@ -43,6 +43,9 @@ export default class QuizResolvers {
     }
   }
 
+  /**
+   * Resolves the submitted user ids into user documents and their corresponding marks.
+   */
   @FieldResolver(() => [SubmissionType], {
     nullable: true,
     name: 'submissions',
@@ -68,4 +71,32 @@ export default class QuizResolvers {
       return error;
     }
   }
+
+  /**
+   * getQuizzes mutation takes an array of ids that needs to be fetched.
+   * if the array is empty then it returns all the quizzes.
+   */
+  @Query(() => [Quiz])
+  async getQuizzes(
+    @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
+  ): Promise<(Quiz | null)[]> {
+    try {
+      // TODO: Use context to allow requests only with the role of user/student to proceed ahead.
+
+      if (ids.length === 0) {
+        return await QuizModel.find({});
+      }
+
+      return await Promise.all(
+        ids.map(async quizId => QuizModel.findById(quizId)),
+      );
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
+   * createQuiz mutation creates a new Quiz and takes in the following parameters.
+   */
+  // @Mutation(() => Quiz)
 }

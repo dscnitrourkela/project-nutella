@@ -11,7 +11,7 @@ import {ObjectId} from 'mongodb';
 @ObjectType({description: 'The Quiz model'})
 export class Quiz {
   @Field(() => ID, {description: 'Quiz MongoDB ObjectID'})
-  id: ObjectId;
+  _id: ObjectId;
 
   @Property({required: true, trim: true})
   @Field({description: 'Name of the Quiz'})
@@ -29,6 +29,7 @@ export class Quiz {
   @Field(() => [String], {
     description: 'An array containing the IDs of the questions',
     name: 'questionIds',
+    nullable: true,
   })
   questions: string[];
 
