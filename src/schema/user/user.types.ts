@@ -19,9 +19,9 @@ export class UserInput implements Partial<User> {
   @Field({nullable: true})
   rollNo: string;
 
-  @Field({nullable: true})
+  @Field(() => [String], {nullable: true})
   fcmToken: string[];
 
-  @Field({nullable: true})
+  @Field(() => [String], {nullable: true})
   quizzes: string[];
 }
