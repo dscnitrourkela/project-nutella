@@ -7,9 +7,6 @@ import {
 } from '@typegoose/typegoose';
 import {ObjectId} from 'mongodb';
 
-// Models
-import {Question, QuestionModel} from '../question/question.model';
-
 @modelOptions({options: {allowMixed: 0, customName: 'quizzes'}})
 @ObjectType({description: 'The Quiz model'})
 export class Quiz {
@@ -35,21 +32,6 @@ export class Quiz {
   })
   questions: string[];
 
-  @Field(() => [Question], {
-    description:
-      'An array containing the details of all the questions in this quiz.',
-    name: 'questions',
-  })
-  async questionsArray(): Promise<(Question | null)[]> {
-    try {
-      return await Promise.all(
-        this.questions.map(questionId => QuestionModel.findById(questionId)),
-      );
-    } catch (error) {
-      return error;
-    }
-  }
-
   @Property({default: []})
   @Field(() => [String], {
     description: 'A list of all the instructions for the quiz',
@@ -58,6 +40,7 @@ export class Quiz {
 
   @Property({default: []})
   @Field(() => [String], {
+    name: 'submissionIds',
     description:
       'An array of objects containing the student id and corresponding marks',
   })
