@@ -1,9 +1,16 @@
-/* eslint-disable import/prefer-default-export */
 // Libraries
-import {ObjectType, Field} from 'type-graphql';
+import {
+  ObjectType,
+  Field,
+  InputType,
+  GraphQLISODateTime,
+  ID,
+} from 'type-graphql';
+import {ObjectID} from 'mongodb';
 
 // Models + Types
 import {User} from '../user/user.model';
+import {Quiz} from './quiz.model';
 
 @ObjectType()
 export class SubmissionType {
@@ -12,4 +19,37 @@ export class SubmissionType {
 
   @Field({nullable: true})
   marks: number;
+}
+
+@InputType()
+export class SubmissionInputType {
+  @Field(() => ID)
+  id: ObjectID;
+
+  @Field()
+  marks: number;
+}
+
+@InputType()
+export class QuizInput implements Partial<Quiz> {
+  @Field({nullable: true})
+  name: string;
+
+  @Field(() => GraphQLISODateTime, {nullable: true})
+  startTime: Date;
+
+  @Field(() => GraphQLISODateTime, {nullable: true})
+  endTime: Date;
+
+  @Field(() => [String], {nullable: true})
+  questions: string[];
+
+  @Field(() => [String], {nullable: true})
+  instructions: string[];
+
+  @Field(() => [SubmissionInputType], {nullable: true})
+  submissions: {id: string; marks: number}[];
+
+  @Field({nullable: true})
+  active: boolean;
 }

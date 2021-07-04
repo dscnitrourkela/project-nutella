@@ -5,7 +5,7 @@ import {
   FieldResolver,
   Root,
   Arg,
-  // Mutation,
+  Mutation,
 } from 'type-graphql';
 import {ObjectID} from 'mongodb';
 
@@ -16,8 +16,7 @@ import {UserModel} from '../user/user.model';
 
 // Utils + Types
 import {ObjectIdScalar} from '../scalars';
-import {SubmissionType} from './quiz.type';
-// import getUpdateObject from '../../utils/getUpdateObject';
+import {SubmissionType, QuizInput} from './quiz.type';
 
 @Resolver(() => Quiz)
 export default class QuizResolvers {
@@ -96,7 +95,73 @@ export default class QuizResolvers {
   }
 
   /**
-   * createQuiz mutation creates a new Quiz and takes in the following parameters.
+   * createQuiz mutation creates a new Quiz and takes in the quizInput parameters.
    */
-  // @Mutation(() => Quiz)
+  @Mutation(() => Quiz)
+  async createQuiz(@Arg('quizDetails') quizDetails: QuizInput): Promise<Quiz> {
+    // TODO: Use context to allow requests only with the admin role to proceed ahead.
+
+    const {name, startTime, endTime, questions, instructions, active} =
+      quizDetails;
+
+    if (!name || !startTime || !endTime || !questions || !instructions) {
+      throw new Error('Bad Request: Missing Parameters.');
+    }
+
+    try {
+      return await QuizModel.create({
+        ...quizDetails,
+        active: active || false,
+      });
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
+   * updateQuiz mutation takes the quizInput object as parameter (with the necessary properties),
+   * and the id of the quiz to be updated.
+   * The updated quiz is then returned.
+   */
+  @Mutation(() => Quiz)
+  async updateQuiz(
+    @Arg('quizId', () => ObjectIdScalar) quizId: ObjectID,
+    @Arg('quizDetails', () => QuizInput) quizDetails: QuizInput,
+  ): Promise<Quiz | null> {
+    // TODO: Use context to allow requests only with the admin role to proceed ahead.
+
+    try {
+      // const updatedQuiz = getUpdateObject(quizDetails);
+      const existingQuiz = await QuizModel.findById(quizId);
+
+      if (!existingQuiz) {
+        throw new Error('Bad Request: Quiz not found');
+      }
+
+      return await QuizModel.findByIdAndUpdate(
+        quizId,
+        {
+          ...quizDetails,
+        },
+        {new: true},
+      );
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
+   * deleteQuiz mutation takes in quizId as a parameter and deletes the corresponding quiz.
+   */
+  @Mutation(() => Quiz)
+  async deleteQuiz(
+    @Arg('quizId', () => ObjectIdScalar) quizId: ObjectID,
+  ): Promise<Quiz | null> {
+    // TODO: Use context to allow requests only with the role of admin to proceed ahead
+    try {
+      return await QuizModel.findByIdAndDelete(quizId);
+    } catch (error) {
+      return error;
+    }
+  }
 }
