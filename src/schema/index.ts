@@ -5,12 +5,13 @@ import {ObjectId} from 'mongodb';
 // Resolvers
 import UserResolvers from './user/user.resolver';
 import QuizResolvers from './quiz/quiz.resolver';
+import QuestionResolvers from './question/question.resolver';
 
 // Middlewares + Utils
 import {TypegooseMiddleware} from '../config/typegoose';
 import {ObjectIdScalar} from './scalars';
 
-const resolvers = [UserResolvers, QuizResolvers] as const;
+const resolvers = [UserResolvers, QuizResolvers, QuestionResolvers] as const;
 
 // eslint-disable-next-line import/prefer-default-export
 export const schema = buildSchema({

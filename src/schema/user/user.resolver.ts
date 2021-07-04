@@ -40,14 +40,14 @@ export default class UserResolvers {
     array of the Users.
     If no ids are passed, then all the Users are returned.
   */
-  @Query(() => [User])
+  @Query(() => [User], {nullable: true})
   async getUsers(
     @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
   ): Promise<(User | null)[]> {
     // TODO: Use context to allow requests only with the role of admin to proceed ahead
 
     try {
-      if (ids.length === 0) {
+      if (!ids || ids.length === 0) {
         return await UserModel.find({});
       }
 
@@ -70,9 +70,12 @@ export default class UserResolvers {
     // TODO: Extract user uid from the Context
     const uid = 'jadfomewodkljfalkfh';
 
-    const {name, email, phoneNo, rollNo, fcmToken, quizzes} = userDetails;
-
     try {
+      if (!userDetails) {
+        throw new Error('Bad Request: Missing Parameters');
+      }
+
+      const {name, email, phoneNo, rollNo, fcmToken, quizzes} = userDetails;
       if (!name || !email || !phoneNo || !rollNo) {
         throw new Error('Bad Request: Missing Parameters');
       }
@@ -82,8 +85,8 @@ export default class UserResolvers {
         email,
         phoneNo,
         rollNo,
-        fcmToken,
         uid,
+        fcmToken: fcmToken.length > 0 ? fcmToken : [],
         quizzes: quizzes.length > 0 ? quizzes : [],
       });
     } catch (error) {
@@ -96,7 +99,7 @@ export default class UserResolvers {
    * to be updated and updates the user.
    * The updated user is then returned.
    */
-  @Mutation(() => User)
+  @Mutation(() => User, {nullable: true})
   async updateUser(
     @Arg('userId', () => ObjectIdScalar) userId: ObjectID,
     @Arg('userDetails', () => UserInput) userDetails: UserInput,
@@ -104,6 +107,10 @@ export default class UserResolvers {
     // TODO: Use context to allow requests only with the role of user to proceed ahead
 
     try {
+      if (!userId || !userDetails) {
+        throw new Error('Bad Request: Missing Parameters');
+      }
+
       const updatedUser = getUpdateObject(userDetails);
       const existingUser = await UserModel.findById(userId);
 
@@ -125,12 +132,17 @@ export default class UserResolvers {
   /**
    * deleterUser mutation takes in a userId parameter and deletes the corresponding user.
    */
-  @Mutation(() => User)
+  @Mutation(() => User, {nullable: true})
   async deleteUser(
     @Arg('userId', () => ObjectIdScalar) userId: ObjectID,
   ): Promise<User | null> {
     // TODO: Use context to allow requests only with the role of user to proceed ahead
+
     try {
+      if (!userId) {
+        throw new Error('Bad Request: Missing Parameters');
+      }
+
       return await UserModel.findByIdAndDelete(userId);
     } catch (error) {
       return error;
