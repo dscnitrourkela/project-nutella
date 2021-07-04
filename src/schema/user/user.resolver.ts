@@ -98,7 +98,7 @@ export default class UserResolvers {
    */
   @Mutation(() => User)
   async updateUser(
-    @Arg('userDetails') userDetails: UserInput,
+    @Arg('userDetails', () => UserInput) userDetails: UserInput,
     @Arg('userId', () => ObjectIdScalar) userId: ObjectID,
   ): Promise<User | null> {
     // TODO: Use context to allow requests only with the role of user to proceed ahead
