@@ -9,7 +9,7 @@ import {User} from './user.model';
 // Utils + Types + Scalarss
 import {ObjectIdScalar} from '../scalars';
 
-@InputType()
+@InputType({description: 'Input Type containing user properties'})
 export class UserInput implements Partial<User> {
   @Field({nullable: true})
   name: string;

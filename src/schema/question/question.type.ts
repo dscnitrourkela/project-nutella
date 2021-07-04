@@ -8,7 +8,9 @@ import {Question} from './question.model';
 // Utils + Types + Scalarss
 import {ObjectIdScalar} from '../scalars';
 
-@InputType()
+@InputType({
+  description: 'Input object containing the properties of a question model',
+})
 export class QuestionInput implements Partial<Question> {
   @Field({nullable: true})
   question: string;
@@ -32,7 +34,7 @@ export class QuestionInput implements Partial<Question> {
   explanation: string;
 }
 
-@InputType()
+@InputType({description: 'Input object for updating questions.'})
 export class QuestionUpdateInput {
   @Field(() => ObjectIdScalar)
   id: ObjectID;

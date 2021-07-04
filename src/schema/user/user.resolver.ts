@@ -40,7 +40,11 @@ export default class UserResolvers {
     array of the Users.
     If no ids are passed, then all the Users are returned.
   */
-  @Query(() => [User], {nullable: true})
+  @Query(() => [User], {
+    nullable: true,
+    description:
+      'Takes an array of User ObjectIDs as a parameter and returns an array of corresponding users. If an empty array is passed, All the users are returned.',
+  })
   async getUsers(
     @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
   ): Promise<(User | null)[]> {
@@ -63,7 +67,10 @@ export default class UserResolvers {
     createUser mutation takes an object of user properties as a parameter and creates a new user.
     The created user is then returned
   */
-  @Mutation(() => User)
+  @Mutation(() => User, {
+    description:
+      'Takes an object containing the User details as parameter and returns the created user. In case of missing parameters, bad request error is thrown.',
+  })
   async createUser(@Arg('userDetails') userDetails: UserInput): Promise<User> {
     // TODO: Use context to allow requests only with the role of user to proceed ahead
 
@@ -99,7 +106,11 @@ export default class UserResolvers {
    * to be updated and updates the user.
    * The updated user is then returned.
    */
-  @Mutation(() => User, {nullable: true})
+  @Mutation(() => User, {
+    nullable: true,
+    description:
+      'Takes the User ObjectID and an object containing the properties to be updated as parameter. In case of missing parameters, a bad request error is thrown.',
+  })
   async updateUser(
     @Arg('userId', () => ObjectIdScalar) userId: ObjectID,
     @Arg('userDetails', () => UserInput) userDetails: UserInput,
@@ -132,7 +143,11 @@ export default class UserResolvers {
   /**
    * deleterUser mutation takes in a userId parameter and deletes the corresponding user.
    */
-  @Mutation(() => User, {nullable: true})
+  @Mutation(() => User, {
+    nullable: true,
+    description:
+      'Takes the User ObjectID as parameter and deletes the corresponding User.',
+  })
   async deleteUser(
     @Arg('userId', () => ObjectIdScalar) userId: ObjectID,
   ): Promise<User | null> {
