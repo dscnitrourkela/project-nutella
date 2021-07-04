@@ -14,7 +14,7 @@ import {Quiz, QuizModel} from './quiz.model';
 import {Question, QuestionModel} from '../question/question.model';
 import {UserModel} from '../user/user.model';
 
-// Utils + Types
+// Utils + Types + Scalars
 import {ObjectIdScalar} from '../scalars';
 import {SubmissionType, QuizInput} from './quiz.type';
 

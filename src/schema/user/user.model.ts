@@ -1,17 +1,20 @@
 // Libraries
-import {Field, ObjectType, ID} from 'type-graphql';
+import {Field, ObjectType} from 'type-graphql';
 import {
   prop as Property,
   getModelForClass,
   modelOptions,
 } from '@typegoose/typegoose';
-import {ObjectId} from 'mongodb';
+import {ObjectID} from 'mongodb';
+
+// Utils + Types + Scalars
+import {ObjectIdScalar} from '../scalars';
 
 @modelOptions({options: {allowMixed: 0}})
 @ObjectType({description: 'The User Model'})
 export class User {
-  @Field(() => ID, {description: 'User MongoDB ObjectID'})
-  _id: ObjectId;
+  @Field(() => ObjectIdScalar, {description: 'User MongoDB ObjectID'})
+  _id: ObjectID;
 
   @Property({required: true, trim: true})
   @Field({description: 'Name of the user'})
@@ -48,11 +51,11 @@ export class User {
   uid: string;
 
   @Property({default: []})
-  @Field(() => [String], {
+  @Field(() => [ObjectIdScalar], {
     description: 'An array of IDs of the quiz',
     name: 'quizIds',
   })
-  quizzes: string[];
+  quizzes: ObjectID[];
 }
 
 export const UserModel = getModelForClass(User);
