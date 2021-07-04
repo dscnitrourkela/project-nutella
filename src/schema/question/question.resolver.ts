@@ -16,6 +16,7 @@ export default class QuestionResolvers {
    * getQuestions query takes an array of QuestionIds as a parameter and returns an array of the Questions
    * If no ids are passed (empty array), all the Questions will be returned.
    */
+  @Query(() => [Question], {nullable: true})
   async getQuestions(
     @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
   ): Promise<(Question | null)[]> {
@@ -38,17 +39,17 @@ export default class QuestionResolvers {
    * a 2 dimensional array containing the questions for each quiz.
    * If no ids are passed, a bad request error is thrown.
    */
-  @Query(() => [Question])
+  @Query(() => [Question], {nullable: true})
   async getQuestionsForQuiz(
     @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
   ): Promise<Promise<Promise<Question | null>[] | undefined>[]> {
     // TODO: Use context for the appropriate permissions to proceed ahead.
 
-    if (ids.length && ids.length === 0) {
-      throw new Error('Bad Request: Missing Parameters');
-    }
-
     try {
+      if (ids.length && ids.length === 0) {
+        throw new Error('Bad Request: Missing Parameters');
+      }
+
       const quizzes = await Promise.all(
         ids.map(async quizId => QuizModel.findById(quizId)),
       );
@@ -108,7 +109,7 @@ export default class QuestionResolvers {
    * and updateObject
    * If the array is empty a Bad request error is thrown.
    */
-  @Mutation(() => [Question])
+  @Mutation(() => [Question], {nullable: true})
   async updateQuestions(
     @Arg('questionDetails', () => [QuestionUpdateInput])
     questionUpdatesArray: QuestionUpdateInput[],
@@ -134,8 +135,8 @@ export default class QuestionResolvers {
    * deleteQuestions takes an array of question ids to be deleted.
    * If the array is empty a bad request error is thrown
    */
-  @Mutation(() => [Question])
-  async deleteQuiz(
+  @Mutation(() => [Question], {nullable: true})
+  async deleteQuestions(
     @Arg('ids', () => ObjectIdScalar) ids: ObjectID[],
   ): Promise<(Question | null)[]> {
     // TODO: Use context to allow requests only with the role of admin to proceed ahead

@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 // Libraries
 import {InputType, Field} from 'type-graphql';
 import {ObjectID} from 'mongodb';
@@ -17,7 +16,7 @@ export class QuestionInput implements Partial<Question> {
   @Field({nullable: true})
   image: string;
 
-  @Field({nullable: true})
+  @Field(() => [String], {nullable: true})
   options: string[];
 
   @Field({nullable: true})

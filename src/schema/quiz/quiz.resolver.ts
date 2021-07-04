@@ -75,14 +75,14 @@ export default class QuizResolvers {
    * getQuizzes mutation takes an array of ids that needs to be fetched.
    * if the array is empty then it returns all the quizzes.
    */
-  @Query(() => [Quiz])
+  @Query(() => [Quiz], {nullable: true})
   async getQuizzes(
     @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
   ): Promise<(Quiz | null)[]> {
     try {
       // TODO: Use context to allow requests only with the role of user/student to proceed ahead.
 
-      if (ids.length === 0) {
+      if (!ids || ids.length === 0) {
         return await QuizModel.find({});
       }
 
@@ -101,14 +101,17 @@ export default class QuizResolvers {
   async createQuiz(@Arg('quizDetails') quizDetails: QuizInput): Promise<Quiz> {
     // TODO: Use context to allow requests only with the admin role to proceed ahead.
 
-    const {name, startTime, endTime, questions, instructions, active} =
-      quizDetails;
-
-    if (!name || !startTime || !endTime || !questions || !instructions) {
-      throw new Error('Bad Request: Missing Parameters.');
-    }
-
     try {
+      if (!quizDetails) {
+        throw new Error('Bad Request: Missing Parameters');
+      }
+
+      const {name, startTime, endTime, questions, instructions, active} =
+        quizDetails;
+      if (!name || !startTime || !endTime || !questions || !instructions) {
+        throw new Error('Bad Request: Missing Parameters.');
+      }
+
       return await QuizModel.create({
         ...quizDetails,
         active: active || false,
@@ -123,7 +126,7 @@ export default class QuizResolvers {
    * and the id of the quiz to be updated.
    * The updated quiz is then returned.
    */
-  @Mutation(() => Quiz)
+  @Mutation(() => Quiz, {nullable: true})
   async updateQuiz(
     @Arg('quizId', () => ObjectIdScalar) quizId: ObjectID,
     @Arg('quizDetails', () => QuizInput) quizDetails: QuizInput,
@@ -131,20 +134,18 @@ export default class QuizResolvers {
     // TODO: Use context to allow requests only with the admin role to proceed ahead.
 
     try {
-      // const updatedQuiz = getUpdateObject(quizDetails);
-      const existingQuiz = await QuizModel.findById(quizId);
+      if (!quizId || !quizDetails) {
+        throw new Error('Bad Request: Missing Parameter');
+      }
 
+      const existingQuiz = await QuizModel.findById(quizId);
       if (!existingQuiz) {
         throw new Error('Bad Request: Quiz not found');
       }
 
-      return await QuizModel.findByIdAndUpdate(
-        quizId,
-        {
-          ...quizDetails,
-        },
-        {new: true},
-      );
+      return await QuizModel.findByIdAndUpdate(quizId, quizDetails, {
+        new: true,
+      });
     } catch (error) {
       return error;
     }
@@ -153,7 +154,7 @@ export default class QuizResolvers {
   /**
    * deleteQuiz mutation takes in quizId as a parameter and deletes the corresponding quiz.
    */
-  @Mutation(() => Quiz)
+  @Mutation(() => Quiz, {nullable: true})
   async deleteQuiz(
     @Arg('quizId', () => ObjectIdScalar) quizId: ObjectID,
   ): Promise<Quiz | null> {
