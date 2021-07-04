@@ -44,9 +44,9 @@ export default class UserResolvers {
   async getUsers(
     @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
   ): Promise<(User | null)[]> {
-    try {
-      // TODO: Use context to allow requests only with the role of admin to proceed ahead
+    // TODO: Use context to allow requests only with the role of admin to proceed ahead
 
+    try {
       if (ids.length === 0) {
         return await UserModel.find({});
       }

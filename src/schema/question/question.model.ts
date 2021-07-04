@@ -1,18 +1,20 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // Libraries
-import {Field, ObjectType, ID} from 'type-graphql';
+import {Field, ObjectType} from 'type-graphql';
 import {
   prop as Property,
   getModelForClass,
   modelOptions,
 } from '@typegoose/typegoose';
-import {ObjectId} from 'mongodb';
+import {ObjectID} from 'mongodb';
+
+// Utils + Types + Scalars
+import {ObjectIdScalar} from '../scalars';
 
 @modelOptions({options: {allowMixed: 0}})
 @ObjectType({description: 'The Question Model'})
 export class Question {
-  @Field(() => ID, {description: 'Question MongoDB ObjectID'})
-  id: ObjectId;
+  @Field(() => ObjectIdScalar, {description: 'Question MongoDB ObjectID'})
+  _id: ObjectID;
 
   @Property({required: true, trim: true})
   @Field({description: 'Question string'})
