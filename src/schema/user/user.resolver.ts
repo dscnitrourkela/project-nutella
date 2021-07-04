@@ -72,11 +72,11 @@ export default class UserResolvers {
 
     const {name, email, phoneNo, rollNo, fcmToken, quizzes} = userDetails;
 
-    if (!name || !email || !phoneNo || !rollNo) {
-      throw new Error('Bad Request: Missing Parameters');
-    }
-
     try {
+      if (!name || !email || !phoneNo || !rollNo) {
+        throw new Error('Bad Request: Missing Parameters');
+      }
+
       return await UserModel.create({
         name,
         email,
