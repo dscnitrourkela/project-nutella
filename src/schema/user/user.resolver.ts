@@ -13,7 +13,7 @@ import {ObjectID} from 'mongodb';
 import {User, UserModel} from './user.model';
 import {Quiz, QuizModel} from '../quiz/quiz.model';
 
-// Utils + Types
+// Utils + Types + Scalars
 import {ObjectIdScalar} from '../scalars';
 import {UserInput} from './user.types';
 import getUpdateObject from '../../utils/getUpdateObject';
@@ -98,8 +98,8 @@ export default class UserResolvers {
    */
   @Mutation(() => User)
   async updateUser(
-    @Arg('userDetails', () => UserInput) userDetails: UserInput,
     @Arg('userId', () => ObjectIdScalar) userId: ObjectID,
+    @Arg('userDetails', () => UserInput) userDetails: UserInput,
   ): Promise<User | null> {
     // TODO: Use context to allow requests only with the role of user to proceed ahead
 
@@ -126,7 +126,9 @@ export default class UserResolvers {
    * deleterUser mutation takes in a userId parameter and deletes the corresponding user.
    */
   @Mutation(() => User)
-  async deleteUser(@Arg('userId') userId: ObjectID): Promise<User | null> {
+  async deleteUser(
+    @Arg('userId', () => ObjectIdScalar) userId: ObjectID,
+  ): Promise<User | null> {
     // TODO: Use context to allow requests only with the role of user to proceed ahead
     try {
       return await UserModel.findByIdAndDelete(userId);

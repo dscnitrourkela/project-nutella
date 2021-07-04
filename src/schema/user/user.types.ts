@@ -1,9 +1,13 @@
 /* eslint-disable import/prefer-default-export */
 // Libraries
 import {InputType, Field} from 'type-graphql';
+import {ObjectID} from 'mongodb';
 
-// Models + Types
+// Models
 import {User} from './user.model';
+
+// Utils + Types + Scalarss
+import {ObjectIdScalar} from '../scalars';
 
 @InputType()
 export class UserInput implements Partial<User> {
@@ -22,6 +26,6 @@ export class UserInput implements Partial<User> {
   @Field(() => [String], {nullable: true})
   fcmToken: string[];
 
-  @Field(() => [String], {nullable: true})
-  quizzes: string[];
+  @Field(() => [ObjectIdScalar], {nullable: true})
+  quizzes: ObjectID[];
 }

@@ -8,9 +8,12 @@ import {
 } from 'type-graphql';
 import {ObjectID} from 'mongodb';
 
-// Models + Types
+// Models
 import {User} from '../user/user.model';
 import {Quiz} from './quiz.model';
+
+// Utils + Types + Scalars
+import {ObjectIdScalar} from '../scalars';
 
 @ObjectType()
 export class SubmissionType {
@@ -41,14 +44,14 @@ export class QuizInput implements Partial<Quiz> {
   @Field(() => GraphQLISODateTime, {nullable: true})
   endTime: Date;
 
-  @Field(() => [String], {nullable: true})
-  questions: string[];
+  @Field(() => [ObjectIdScalar], {nullable: true})
+  questions: ObjectID[];
 
   @Field(() => [String], {nullable: true})
   instructions: string[];
 
   @Field(() => [SubmissionInputType], {nullable: true})
-  submissions: {id: string; marks: number}[];
+  submissions: {id: ObjectID; marks: number}[];
 
   @Field({nullable: true})
   active: boolean;

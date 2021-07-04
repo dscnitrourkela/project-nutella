@@ -1,17 +1,21 @@
 // Libraries
-import {Field, ObjectType, ID, GraphQLISODateTime} from 'type-graphql';
+import {Field, ObjectType, GraphQLISODateTime} from 'type-graphql';
 import {
   prop as Property,
   getModelForClass,
   modelOptions,
 } from '@typegoose/typegoose';
-import {ObjectId} from 'mongodb';
+import {ObjectID} from 'mongodb';
+
+// Utils + Types + Scalars
+import {ObjectIdScalar} from '../scalars';
+import {SubmissionInputType} from './quiz.type';
 
 @modelOptions({options: {allowMixed: 0, customName: 'quizzes'}})
 @ObjectType({description: 'The Quiz model'})
 export class Quiz {
-  @Field(() => ID, {description: 'Quiz MongoDB ObjectID'})
-  _id: ObjectId;
+  @Field(() => ObjectIdScalar, {description: 'Quiz MongoDB ObjectID'})
+  _id: ObjectID;
 
   @Property({required: true, trim: true})
   @Field({description: 'Name of the Quiz'})
@@ -26,12 +30,12 @@ export class Quiz {
   endTime: Date;
 
   @Property({default: []})
-  @Field(() => [String], {
+  @Field(() => [ObjectIdScalar], {
     description: 'An array containing the IDs of the questions',
     name: 'questionIds',
     nullable: true,
   })
-  questions: string[];
+  questions: ObjectID[];
 
   @Property({default: []})
   @Field(() => [String], {
@@ -40,12 +44,12 @@ export class Quiz {
   instructions: string[];
 
   @Property({default: []})
-  @Field(() => [String], {
+  @Field(() => [SubmissionInputType], {
     name: 'submissionIds',
     description:
       'An array of objects containing the student id and corresponding marks',
   })
-  submissions: {id: string; marks: number}[];
+  submissions: {id: ObjectID; marks: number}[];
 
   @Property({default: false})
   @Field({description: 'Status of the quiz (published or unpublished)'})
