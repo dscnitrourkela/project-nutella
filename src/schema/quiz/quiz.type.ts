@@ -16,7 +16,7 @@ import {Quiz} from './quiz.model';
 import {ObjectIdScalar} from '../scalars';
 
 @ObjectType()
-export class SubmissionType {
+export class SubmissionResolveType {
   @Field(() => User, {nullable: true})
   user: User | null;
 
@@ -26,6 +26,15 @@ export class SubmissionType {
 
 @InputType()
 export class SubmissionInputType {
+  @Field(() => ID)
+  id: ObjectID;
+
+  @Field()
+  marks: number;
+}
+
+@ObjectType()
+export class SubmissionType {
   @Field(() => ID)
   id: ObjectID;
 

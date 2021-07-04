@@ -9,7 +9,7 @@ import {ObjectID} from 'mongodb';
 
 // Utils + Types + Scalars
 import {ObjectIdScalar} from '../scalars';
-import {SubmissionInputType} from './quiz.type';
+import {SubmissionType} from './quiz.type';
 
 @modelOptions({options: {allowMixed: 0, customName: 'quizzes'}})
 @ObjectType({description: 'The Quiz model'})
@@ -44,7 +44,7 @@ export class Quiz {
   instructions: string[];
 
   @Property({default: []})
-  @Field(() => [SubmissionInputType], {
+  @Field(() => [SubmissionType], {
     name: 'submissionIds',
     description:
       'An array of objects containing the student id and corresponding marks',
