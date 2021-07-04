@@ -75,7 +75,11 @@ export default class QuizResolvers {
    * getQuizzes mutation takes an array of ids that needs to be fetched.
    * if the array is empty then it returns all the quizzes.
    */
-  @Query(() => [Quiz], {nullable: true})
+  @Query(() => [Quiz], {
+    nullable: true,
+    description:
+      'Takes an array of Quiz ObjectIDs and returns an array of the corresponding Quizzes. If an empty array is passed, all Quizzes are returned.',
+  })
   async getQuizzes(
     @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
   ): Promise<(Quiz | null)[]> {
@@ -97,7 +101,10 @@ export default class QuizResolvers {
   /**
    * createQuiz mutation creates a new Quiz and takes in the quizInput parameters.
    */
-  @Mutation(() => Quiz)
+  @Mutation(() => Quiz, {
+    description:
+      'Takes an Object containing quiz properties as parameter, creates a Quiz model in database. If no object passed, a bad request error is thrown.',
+  })
   async createQuiz(@Arg('quizDetails') quizDetails: QuizInput): Promise<Quiz> {
     // TODO: Use context to allow requests only with the admin role to proceed ahead.
 
@@ -126,7 +133,11 @@ export default class QuizResolvers {
    * and the id of the quiz to be updated.
    * The updated quiz is then returned.
    */
-  @Mutation(() => Quiz, {nullable: true})
+  @Mutation(() => Quiz, {
+    nullable: true,
+    description:
+      'Takes Quiz ObjectID and Quiz Input object (containing the properties to be updated). In case of missing parameters, a bad request error is thrown',
+  })
   async updateQuiz(
     @Arg('quizId', () => ObjectIdScalar) quizId: ObjectID,
     @Arg('quizDetails', () => QuizInput) quizDetails: QuizInput,
@@ -154,7 +165,11 @@ export default class QuizResolvers {
   /**
    * deleteQuiz mutation takes in quizId as a parameter and deletes the corresponding quiz.
    */
-  @Mutation(() => Quiz, {nullable: true})
+  @Mutation(() => Quiz, {
+    nullable: true,
+    description:
+      'Takes Quiz ObjectID as a parameter and deletes the corresponding quiz. In case of missing ID, a bad request error is thrown',
+  })
   async deleteQuiz(
     @Arg('quizId', () => ObjectIdScalar) quizId: ObjectID,
   ): Promise<Quiz | null> {

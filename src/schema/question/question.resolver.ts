@@ -16,7 +16,11 @@ export default class QuestionResolvers {
    * getQuestions query takes an array of QuestionIds as a parameter and returns an array of the Questions
    * If no ids are passed (empty array), all the Questions will be returned.
    */
-  @Query(() => [Question], {nullable: true})
+  @Query(() => [Question], {
+    nullable: true,
+    description:
+      'Takes an array of Question ObjectIDs as a parameter and returns an array of the questions as per the IDs. If an empty array is passed, all the questions are returned  ',
+  })
   async getQuestions(
     @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
   ): Promise<(Question | null)[]> {
@@ -39,7 +43,11 @@ export default class QuestionResolvers {
    * a 2 dimensional array containing the questions for each quiz.
    * If no ids are passed, a bad request error is thrown.
    */
-  @Query(() => [Question], {nullable: true})
+  @Query(() => [Question], {
+    nullable: true,
+    description:
+      'Takes an array of Quiz ObjectIDs as a parameter and returns a 2 Dimensional array containing the questions for each quiz. If an empty array/no array is passed a bad request error is thrown',
+  })
   async getQuestionsForQuiz(
     @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
   ): Promise<Promise<Promise<Question | null>[] | undefined>[]> {
@@ -70,7 +78,10 @@ export default class QuestionResolvers {
    * createQuestions mutation gets an array of questions as parameter which are then added to the DB
    * If empty array provided bad request error is thrown.
    */
-  @Mutation(() => [Question])
+  @Mutation(() => [Question], {
+    description:
+      'Takes an array of questions as parameter which are then added to the Database. If empty array is provided, a bad request error is thrown',
+  })
   async createQuestions(
     @Arg('questionDetails', () => [QuestionInput]) questionDetails: Question[],
   ): Promise<(Question | null)[]> {
@@ -109,7 +120,11 @@ export default class QuestionResolvers {
    * and updateObject
    * If the array is empty a Bad request error is thrown.
    */
-  @Mutation(() => [Question], {nullable: true})
+  @Mutation(() => [Question], {
+    nullable: true,
+    description:
+      'Takes an array of objects as parameter where the object contains the id of the question to be updated and the updateObject. If an array is empty, a bad request error is thrown',
+  })
   async updateQuestions(
     @Arg('questionDetails', () => [QuestionUpdateInput])
     questionUpdatesArray: QuestionUpdateInput[],
@@ -135,7 +150,11 @@ export default class QuestionResolvers {
    * deleteQuestions takes an array of question ids to be deleted.
    * If the array is empty a bad request error is thrown
    */
-  @Mutation(() => [Question], {nullable: true})
+  @Mutation(() => [Question], {
+    nullable: true,
+    description:
+      'Takes an array of Question ObjectIDs to be deleted as a parameter. If an empty array is passed, a bad request error is thrown',
+  })
   async deleteQuestions(
     @Arg('ids', () => ObjectIdScalar) ids: ObjectID[],
   ): Promise<(Question | null)[]> {
