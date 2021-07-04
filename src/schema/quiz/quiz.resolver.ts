@@ -159,6 +159,9 @@ export default class QuizResolvers {
   ): Promise<Quiz | null> {
     // TODO: Use context to allow requests only with the role of admin to proceed ahead
     try {
+      if (!quizId) {
+        throw new Error('Bad Request: Missing Parameters');
+      }
       return await QuizModel.findByIdAndDelete(quizId);
     } catch (error) {
       return error;
