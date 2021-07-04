@@ -16,7 +16,7 @@ import {UserModel} from '../user/user.model';
 
 // Utils + Types + Scalars
 import {ObjectIdScalar} from '../scalars';
-import {SubmissionType, QuizInput} from './quiz.type';
+import {SubmissionResolveType, QuizInput} from './quiz.type';
 
 @Resolver(() => Quiz)
 export default class QuizResolvers {
@@ -45,7 +45,7 @@ export default class QuizResolvers {
   /**
    * Resolves the submitted user ids into user documents and their corresponding marks.
    */
-  @FieldResolver(() => [SubmissionType], {
+  @FieldResolver(() => [SubmissionResolveType], {
     nullable: true,
     name: 'submissions',
     description:
@@ -53,7 +53,7 @@ export default class QuizResolvers {
   })
   async submissionsArray(
     @Root() quiz: Quiz,
-  ): Promise<(SubmissionType | null)[]> {
+  ): Promise<(SubmissionResolveType | null)[]> {
     try {
       if (quiz.submissions.length > 0) {
         const users = await Promise.all(
