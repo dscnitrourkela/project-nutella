@@ -1,0 +1,57 @@
+name: PR Build Deploy
+
+on:
+  pull_request_target:
+    types: [labeled]
+  
+env:
+  AUTH_PROVIDER_X509_CERT_URL: ${{secrets.AUTH_PROVIDER_X509_CERT_URL}}
+  AUTH_URI: ${{secrets.AUTH_URI}}
+  TYPE: ${{secrets.TYPE}}
+  TOKEN_URI: ${{secrets.TOKEN_URI}}
+  PROJECT_ID: ${{secrets.PROJECT_ID}}
+  PRIVATE_KEY_ID: ${{secrets.PRIVATE_KEY_ID}}
+  PRIVATE_KEY: ${{secrets.PRIVATE_KEY}}
+  PORT: ${{secrets.PORT}}
+  MONGO_APP_URL: ${{secrets.MONGO_APP_URL}}
+  CLIENT_X509_CERT_URL: ${{secrets.CLIENT_X509_CERT_URL}}
+  CLIENT_EMAIL: ${{secrets.CLIENT_EMAIL}}
+  
+jobs:
+  pr-build-deploy: 
+    runs-on: [self-hosted, aptiche-pr]
+    if: contains(github.event.pull_request.labels.*.name, 'safe-for-build')
+    defaults:
+      run:
+        shell: bash
+        
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy Staging Server
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Create .env File
+        run: |
+          touch .env
+          echo AUTH_PROVIDER_X509_CERT_URL=$AUTH_PROVIDER_X509_CERT_URL >> .env
+          echo AUTH_URI=$AUTH_URI >> .env
+          echo TYPE=$TYPE >> .env
+          echo TOKEN_URI=$TOKEN_URI >> .env
+          echo PROJECT_ID=$PROJECT_ID >> .env
+          echo PROJECT_ID=$PROJECT_ID >> .env
+          echo PRIVATE_KEY_ID=$PRIVATE_KEY_ID >> .env
+          echo PRIVATE_KEY=\"$PRIVATE_KEY\" >> .env
+          echo PORT=$PORT >> .env
+          echo MONGO_APP_URL=$MONGO_APP_URL >> .env
+          echo CLIENT_X509_CERT_URL=$CLIENT_X509_CERT_URL >> .env
+          echo CLIENT_EMAIL=$CLIENT_EMAIL >> .env
+          cat .env
+      - run: yarn
+      - run: tsc
+      - run: pm2 restart nutella-pr
