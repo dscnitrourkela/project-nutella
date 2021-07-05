@@ -12,7 +12,7 @@ env:
   PROJECT_ID: ${{secrets.PROJECT_ID}}
   PRIVATE_KEY_ID: ${{secrets.PRIVATE_KEY_ID}}
   PRIVATE_KEY: ${{secrets.PRIVATE_KEY}}
-  PORT: ${{secrets.PORT}}
+  PORT: ${{secrets.PR_PORT}}
   MONGO_APP_URL: ${{secrets.MONGO_APP_URL}}
   CLIENT_X509_CERT_URL: ${{secrets.CLIENT_X509_CERT_URL}}
   CLIENT_EMAIL: ${{secrets.CLIENT_EMAIL}}
