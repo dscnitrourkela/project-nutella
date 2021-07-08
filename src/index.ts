@@ -18,6 +18,7 @@ import {schema} from './schema';
 
 // Utils
 import winston from './config/winston';
+import {GetUserAuthScope} from './utils/auth';
 
 // Constants
 import {PORT, IS_PROD} from './constants';
@@ -67,6 +68,27 @@ const MongoDBStore = require('connect-mongodb-session')(Session);
     schema: await schema,
     playground: !IS_PROD,
     debug: !IS_PROD,
+    context: async ({req}) => {
+      const authToken =
+        req.headers && req.headers.authorization
+          ? decodeURI(req.headers.authorization)
+          : null;
+
+      const decodedToken = authToken
+        ? await GetUserAuthScope(req.session, authToken)
+        : null;
+
+      const mdbid = decodedToken ? decodedToken.customClaims.mid : null;
+
+      const {session} = req;
+
+      return {
+        authToken,
+        decodedToken,
+        mdbid,
+        session,
+      };
+    },
   });
 
   // Configure Express with Apollo Server
