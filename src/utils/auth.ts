@@ -1,5 +1,9 @@
 // Libraries
+import {SessionData, Session} from 'express-session';
 import {auth} from '../config/firebase';
+
+// Types
+import {JWT, Context} from '../types/auth';
 
 /**
  * @description Authenticates a user and returns the uid
@@ -10,10 +14,11 @@ import {auth} from '../config/firebase';
  * @param {admin.Auth} _auth Firebase Authentication Library
  * @returns {Object | GraphQLError} decodedToken
  */
-export const AuthenticateUser = async jwt => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const AuthenticateUser = async (jwt: JWT) => {
   try {
     return process.env.NODE_ENV !== 'production'
-      ? ''
+      ? ' '
       : await auth().verifyIdToken(jwt, true);
   } catch (error) {
     return error;
@@ -28,14 +33,17 @@ export const AuthenticateUser = async jwt => {
  * @param {String} jwt
  * @returns {Boolean}
  */
-export const CheckSession = (session, jwt): boolean =>
+export const CheckSession = (
+  session: Session & Partial<SessionData>,
+  jwt: JWT,
+): boolean =>
   !(
     !session ||
     !session.auth ||
     !session.auth.jwt ||
-    !session.exp ||
-    !session.auth.roles ||
-    !session.auth.jwt !== jwt ||
+    !session.auth.exp ||
+    !session.auth.role ||
+    session.auth.jwt !== jwt ||
     session.auth.exp <= Date.now()
   );
 
@@ -49,7 +57,10 @@ export const CheckSession = (session, jwt): boolean =>
  * @param {auth} _auth Firebase Authentication Library
  * @returns {Object | GraphQLError} decodedToken
  */
-export const StartSession = async (session, jwt): Promise<string> => {
+export const StartSession = async (
+  session: Session & Partial<SessionData>,
+  jwt: JWT,
+): Promise<string> => {
   try {
     const decodedToken = await AuthenticateUser(jwt);
     if (!decodedToken) throw new Error('Authentication Error');
@@ -81,10 +92,16 @@ export const StartSession = async (session, jwt): Promise<string> => {
  * @param {String} jwt
  * @returns {NULL | GraphQLError}
  */
-export const EndSession = async (session, jwt): Promise<boolean> => {
+export const EndSession = async (
+  session: Session & Partial<SessionData>,
+  jwt: JWT,
+): Promise<boolean> => {
   try {
     if (CheckSession(session, jwt)) {
-      await session.destroy();
+      session.destroy(error => {
+        if (error) return error;
+        return true;
+      });
       return true;
     }
 
@@ -103,7 +120,10 @@ export const EndSession = async (session, jwt): Promise<boolean> => {
  * @param {String} permission
  * @returns {Boolean | GraphQLError}
  */
-export const HasPermissions = (context, desiredRole): boolean => {
+export const HasPermissions = (
+  context: Context,
+  desiredRole: string,
+): boolean => {
   if (!context || !context.authToken || !context.session) return false;
   if (!CheckSession(context.session, context.authToken)) return false;
 
@@ -120,10 +140,14 @@ export const HasPermissions = (context, desiredRole): boolean => {
  * @param {String} jwt
  * @returns {NULL | Object | GraphQLError}
  */
-export const GetUserAuthScope = async (session, jwt) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const GetUserAuthScope = async (
+  session: Session & Partial<SessionData>,
+  jwt: JWT,
+) => {
   try {
     if (!jwt) return null;
-    if (CheckSession(session, jwt)) return session.auth.decodedToken;
+    if (CheckSession(session, jwt)) return session?.auth?.decodedToken;
 
     const decodedToken = await StartSession(session, jwt);
     if (!decodedToken) throw new Error('Unexpected Error');
