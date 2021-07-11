@@ -4,7 +4,6 @@ import {auth} from '../config/firebase';
 
 // Types + Utils + Constants
 import {JWT, Context} from '../types/auth';
-import {PERMISSIONS} from '../constants';
 
 /**
  * @description Authenticates a user using firebase verify method.
