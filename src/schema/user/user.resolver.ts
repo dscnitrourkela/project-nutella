@@ -6,8 +6,10 @@ import {
   Root,
   Arg,
   Mutation,
+  Ctx,
 } from 'type-graphql';
 import {ObjectID} from 'mongodb';
+import {auth} from '../../config/firebase';
 
 // Model
 import {User, UserModel} from './user.model';
@@ -17,6 +19,9 @@ import {Quiz, QuizModel} from '../quiz/quiz.model';
 import {ObjectIdScalar} from '../scalars';
 import {UserInput} from './user.types';
 import getUpdateObject from '../../utils/getUpdateObject';
+import {PERMISSIONS} from '../../constants';
+import {HasPermissions} from '../../utils/auth';
+import {Context} from '../../types/auth';
 
 @Resolver(() => User)
 export default class UserResolvers {
@@ -47,8 +52,11 @@ export default class UserResolvers {
   })
   async getUsers(
     @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
+    @Ctx() context: Context,
   ): Promise<(User | null)[]> {
-    // TODO: Use context to allow requests only with the role of admin to proceed ahead
+    if (!HasPermissions(context, PERMISSIONS.USER)) {
+      throw new Error('Error: Unauthorized');
+    }
 
     try {
       if (!ids || ids.length === 0) {
@@ -71,11 +79,16 @@ export default class UserResolvers {
     description:
       'Takes an object containing the User details as parameter and returns the created user. In case of missing parameters, bad request error is thrown.',
   })
-  async createUser(@Arg('userDetails') userDetails: UserInput): Promise<User> {
-    // TODO: Use context to allow requests only with the role of user to proceed ahead
+  async createUser(
+    @Arg('userDetails') userDetails: UserInput,
+    @Ctx() context: Context,
+  ): Promise<User> {
+    if (!HasPermissions(context, PERMISSIONS.USER)) {
+      throw new Error('Error: Unauthorized');
+    }
 
-    // TODO: Extract user uid from the Context
-    const uid = 'jadfomewodkljfalkfh';
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const uid = context.decodedToken.uid!;
 
     try {
       if (!userDetails) {
@@ -87,7 +100,7 @@ export default class UserResolvers {
         throw new Error('Bad Request: Missing Parameters');
       }
 
-      return await UserModel.create({
+      const user = await UserModel.create({
         name,
         email,
         phoneNo,
@@ -96,6 +109,14 @@ export default class UserResolvers {
         fcmToken: fcmToken.length > 0 ? fcmToken : [],
         quizzes: quizzes.length > 0 ? quizzes : [],
       });
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await auth().setCustomUserClaims(context.decodedToken.uid!, {
+        mdbid: user.id,
+        role: PERMISSIONS.USER,
+      });
+
+      return user;
     } catch (error) {
       return error;
     }
@@ -114,8 +135,11 @@ export default class UserResolvers {
   async updateUser(
     @Arg('userId', () => ObjectIdScalar) userId: ObjectID,
     @Arg('userDetails', () => UserInput) userDetails: UserInput,
+    @Ctx() context: Context,
   ): Promise<User | null> {
-    // TODO: Use context to allow requests only with the role of user to proceed ahead
+    if (!HasPermissions(context, PERMISSIONS.USER)) {
+      throw new Error('Error: Unauthorized');
+    }
 
     try {
       if (!userId || !userDetails) {
@@ -150,8 +174,11 @@ export default class UserResolvers {
   })
   async deleteUser(
     @Arg('userId', () => ObjectIdScalar) userId: ObjectID,
+    @Ctx() context: Context,
   ): Promise<User | null> {
-    // TODO: Use context to allow requests only with the role of user to proceed ahead
+    if (!HasPermissions(context, PERMISSIONS.USER)) {
+      throw new Error('Error: Unauthorized');
+    }
 
     try {
       if (!userId) {
