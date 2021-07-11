@@ -53,13 +53,16 @@ const MongoDBStore = require('connect-mongodb-session')(Session);
   });
   app.use(
     Session({
-      secret: process.env.SESSION_SECRET,
-      cookie: {
-        maxAge: 86400000,
-      },
-      store,
-      resave: true,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      secret: process.env.SESSION_SECRET!,
       saveUninitialized: true,
+      resave: true,
+      store,
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
+        httpOnly: true, // Prevents cookie access on client
+        secure: !!IS_PROD, // True for production
+      },
     }),
   );
 
@@ -79,7 +82,6 @@ const MongoDBStore = require('connect-mongodb-session')(Session);
         : null;
 
       const mdbid = decodedToken ? decodedToken.customClaims.mid : null;
-
       const {session} = req;
 
       return {
