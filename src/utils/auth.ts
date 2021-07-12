@@ -6,12 +6,13 @@ import {auth} from '../config/firebase';
 import {JWT, Context} from '../types/auth';
 
 /**
- * @description Authenticates a user using firebase verify method.
+ * @description Authenticates a user and returns the uid
  * @function
  * @async
  *
- * @param {JWT} jwt
- * @returns {decodedTokenId} decodedToken
+ * @param {String} jwt JSON Web Token
+ * @param {admin.Auth} _auth Firebase Authentication Library
+ * @returns {Object | GraphQLError} decodedToken
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const AuthenticateUser = async (jwt: JWT) => {
@@ -25,11 +26,11 @@ export const AuthenticateUser = async (jwt: JWT) => {
 };
 
 /**
- * @description Verify's users session based on the request session.
+ * @description Checks if user's session is active and valid
  * @function
  *
- * @param {Session & Partial<SessionData>} session
- * @param {JWT} jwt
+ * @param {session.Session} session
+ * @param {String} jwt
  * @returns {Boolean}
  */
 export const CheckSession = (
@@ -51,14 +52,15 @@ export const CheckSession = (
  * @function
  * @async
  *
- * @param {Session & Partial<SessionData>} session
- * @param {JWT} jwt
- * @returns {Promise<string>}
+ * @param {session.Session} session
+ * @param {String} jwt
+ * @param {auth} _auth Firebase Authentication Library
+ * @returns {Object | GraphQLError} decodedToken
  */
 export const StartSession = async (
   session: Session & Partial<SessionData>,
   jwt: JWT,
-): Promise<unknown> => {
+): Promise<string> => {
   try {
     const decodedToken = await AuthenticateUser(jwt);
     if (!decodedToken) throw new Error('Authentication Error');
@@ -82,13 +84,13 @@ export const StartSession = async (
 };
 
 /**
- * @description Ends the current running session
+ * @description Ends the running session
  * @function
  * @async
  *
- * @param {Session & Partial<SessionData>} session
- * @param {JWT} jwt
- * @returns {boolean}
+ * @param {session.Session} session
+ * @param {String} jwt
+ * @returns {NULL | GraphQLError}
  */
 export const EndSession = async (
   session: Session & Partial<SessionData>,
@@ -132,16 +134,11 @@ export const HasPermissions = (
 };
 
 /**
- * @description Determines the auth status and returns the decodedToken.
- * The flow is:
- * - If no authToken(jwt), return null
- * - Check session, if active then return decodedToken from the session.
- * - If no session, create a new session after verifying jwt and return the decodedToken
+ * @description Parses the auth status
  * @function
  *
- * @param {Session & Partial<SessionData>} session
- * @param {JWT} jwt
- * @returns {DecodedIdToken}
+ * @param {String} jwt
+ * @returns {NULL | Object | GraphQLError}
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const GetUserAuthScope = async (
