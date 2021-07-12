@@ -22,7 +22,7 @@ export default class QuestionResolvers {
       'Takes an array of Question ObjectIDs as a parameter and returns an array of the questions as per the IDs. If an empty array is passed, all the questions are returned  ',
   })
   async getQuestions(
-    @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
+    @Arg('ids', () => [ObjectIdScalar], {nullable: 'items'}) ids: ObjectID[],
   ): Promise<(Question | null)[]> {
     // TODO: Use context to allow requests only with the role of admin to proceed ahead
     try {
