@@ -2,9 +2,8 @@
 import {SessionData, Session} from 'express-session';
 import {auth} from '../config/firebase';
 
-// Types + Utils + Constants
+// Types
 import {JWT, Context} from '../types/auth';
-import {PERMISSIONS} from '../constants';
 
 /**
  * @description Authenticates a user using firebase verify method.
