@@ -25,7 +25,7 @@ import {Context} from '../../types/auth';
 
 @Resolver(() => User)
 export default class UserResolvers {
-  @FieldResolver(() => [Quiz], {name: 'quizzes'})
+  @FieldResolver(() => [Quiz], {name: 'quizzes', nullable: 'items'})
   async quizzesArray(@Root() user: User): Promise<(Quiz | null)[]> {
     try {
       if (user.quizzes.length > 0) {
@@ -51,12 +51,13 @@ export default class UserResolvers {
       'Takes an array of User ObjectIDs as a parameter and returns an array of corresponding users. If an empty array is passed, All the users are returned.',
   })
   async getUsers(
-    @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
-    @Ctx() context: Context,
+    @Arg('ids', () => [ObjectID], {nullable: 'items'})
+    ids: ObjectID[],
+    // @Ctx() context: Context,
   ): Promise<(User | null)[]> {
-    if (!HasPermissions(context, PERMISSIONS.USER)) {
-      throw new Error('Error: Unauthorized');
-    }
+    // if (!HasPermissions(context, PERMISSIONS.USER)) {
+    //   throw new Error('Error: Unauthorized');
+    // }
 
     try {
       if (!ids || ids.length === 0) {

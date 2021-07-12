@@ -42,6 +42,7 @@ export class User {
   @Property({default: []})
   @Field(() => [String], {
     description: 'An array of the fcm tokens of user devices',
+    nullable: 'items',
   })
   fcmToken: string[];
 
@@ -54,6 +55,7 @@ export class User {
   @Field(() => [ObjectIdScalar], {
     description: 'An array of IDs of the quiz',
     name: 'quizIds',
+    nullable: 'items',
   })
   quizzes: ObjectID[];
 }

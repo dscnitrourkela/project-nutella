@@ -81,7 +81,7 @@ export default class QuizResolvers {
       'Takes an array of Quiz ObjectIDs and returns an array of the corresponding Quizzes. If an empty array is passed, all Quizzes are returned.',
   })
   async getQuizzes(
-    @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
+    @Arg('ids', () => [ObjectIdScalar], {nullable: 'items'}) ids: ObjectID[],
   ): Promise<(Quiz | null)[]> {
     try {
       // TODO: Use context to allow requests only with the role of user/student to proceed ahead.
