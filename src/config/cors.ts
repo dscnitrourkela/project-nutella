@@ -1,29 +1,40 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   IS_PROD,
   PROD_ORIGIN,
   DEV_ORIGIN,
+  DEV_ORIGIN_IP,
+  DEV_SOURCE,
+  DEV_SOURCE_IP,
   PR_ORIGIN,
   STAGING_ORIGIN,
 } from '../constants';
 
+const WHITELIST = [
+  DEV_ORIGIN,
+  DEV_ORIGIN_IP,
+  DEV_SOURCE,
+  STAGING_ORIGIN,
+  DEV_SOURCE_IP,
+];
+
 export default {
   credentials: true,
   origin: (
-    origin: string,
+    origin: string | undefined,
     callback: (error: null | Error, success?: boolean) => void,
   ): void => {
     if (
       !IS_PROD &&
       (!origin ||
-        origin.includes(DEV_ORIGIN) ||
-        origin.includes(PR_ORIGIN) ||
-        origin === STAGING_ORIGIN)
+        WHITELIST.indexOf(origin!) !== -1 ||
+        origin?.includes(PR_ORIGIN))
     ) {
       callback(null, true);
-    } else if (origin === PROD_ORIGIN) {
+    } else if (IS_PROD && (!origin || origin === PROD_ORIGIN)) {
       callback(null, true);
     } else {
-      callback(new Error('Request blocked by CORS. Invalid source!'));
+      callback(new Error('Not allowed by CORS'));
     }
   },
 };
