@@ -3,6 +3,7 @@ import {SessionData, Session} from 'express-session';
 import {auth} from '../config/firebase';
 
 // Types + Utils + Constants
+import {PERMISSIONS} from '../constants';
 import {JWT, Context} from '../types/auth';
 
 /**
@@ -16,9 +17,7 @@ import {JWT, Context} from '../types/auth';
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const AuthenticateUser = async (jwt: JWT) => {
   try {
-    return process.env.NODE_ENV !== 'production'
-      ? ' '
-      : await auth().verifyIdToken(jwt, true);
+    return await auth().verifyIdToken(jwt);
   } catch (error) {
     return error;
   }
@@ -41,9 +40,8 @@ export const CheckSession = (
     !session.auth ||
     !session.auth.jwt ||
     !session.auth.exp ||
-    !session.auth.role ||
     session.auth.jwt !== jwt ||
-    session.auth.exp <= Date.now()
+    session.auth.exp * 1000 <= Date.now()
   );
 
 /**
@@ -70,7 +68,7 @@ export const StartSession = async (
       mdbid,
       jwt,
       exp,
-      role,
+      role: decodedToken && (role || PERMISSIONS.USER),
       decodedToken,
     };
 

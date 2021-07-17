@@ -18,9 +18,9 @@ import {Quiz, QuizModel} from '../quiz/quiz.model';
 // Utils + Types + Scalars
 import {ObjectIdScalar} from '../scalars';
 import {UserInput} from './user.types';
-import getUpdateObject from '../../utils/getUpdateObject';
+// import getUpdateObject from '../../utils/getUpdateObject';
 import {PERMISSIONS} from '../../constants';
-import {HasPermissions} from '../../utils/auth';
+import {HasPermissions, CheckSession} from '../../utils/auth';
 import {Context} from '../../types/auth';
 
 @Resolver(() => User)
@@ -53,11 +53,11 @@ export default class UserResolvers {
   async getUsers(
     @Arg('ids', () => [ObjectID], {nullable: 'items'})
     ids: ObjectID[],
-    // @Ctx() context: Context,
+    @Ctx() context: Context,
   ): Promise<(User | null)[]> {
-    // if (!HasPermissions(context, PERMISSIONS.USER)) {
-    //   throw new Error('Error: Unauthorized');
-    // }
+    if (!HasPermissions(context, PERMISSIONS.USER)) {
+      throw new Error('Error: Unauthorized');
+    }
 
     try {
       if (!ids || ids.length === 0) {
@@ -84,7 +84,7 @@ export default class UserResolvers {
     @Arg('userDetails') userDetails: UserInput,
     @Ctx() context: Context,
   ): Promise<User> {
-    if (!HasPermissions(context, PERMISSIONS.USER)) {
+    if (!CheckSession(context.session, context.authToken)) {
       throw new Error('Error: Unauthorized');
     }
 
@@ -111,11 +111,14 @@ export default class UserResolvers {
         quizzes: quizzes.length > 0 ? quizzes : [],
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await auth().setCustomUserClaims(context.decodedToken.uid!, {
+      await auth().setCustomUserClaims(context.decodedToken.uid, {
         mdbid: user.id,
         role: PERMISSIONS.USER,
       });
+
+      context.session.auth.mdbid = user.id;
+      context.session.auth.role = PERMISSIONS.USER;
+      await context.session.save();
 
       return user;
     } catch (error) {
@@ -138,6 +141,7 @@ export default class UserResolvers {
     @Arg('userDetails', () => UserInput) userDetails: UserInput,
     @Ctx() context: Context,
   ): Promise<User | null> {
+    console.log(context.session);
     if (!HasPermissions(context, PERMISSIONS.USER)) {
       throw new Error('Error: Unauthorized');
     }
@@ -147,18 +151,13 @@ export default class UserResolvers {
         throw new Error('Bad Request: Missing Parameters');
       }
 
-      const updatedUser = getUpdateObject(userDetails);
       const existingUser = await UserModel.findById(userId);
-
       if (!existingUser) {
         throw new Error('Bad Request: User not found');
       }
 
-      return await UserModel.findByIdAndUpdate(userId, {
-        $set: {
-          ...existingUser,
-          ...updatedUser,
-        },
+      return await UserModel.findByIdAndUpdate(userId, userDetails, {
+        new: true,
       });
     } catch (error) {
       return error;
