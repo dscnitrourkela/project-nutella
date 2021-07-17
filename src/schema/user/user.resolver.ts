@@ -18,7 +18,6 @@ import {Quiz, QuizModel} from '../quiz/quiz.model';
 // Utils + Types + Scalars
 import {ObjectIdScalar} from '../scalars';
 import {UserInput} from './user.types';
-// import getUpdateObject from '../../utils/getUpdateObject';
 import {PERMISSIONS} from '../../constants';
 import {HasPermissions, CheckSession} from '../../utils/auth';
 import {Context} from '../../types/auth';
@@ -141,7 +140,6 @@ export default class UserResolvers {
     @Arg('userDetails', () => UserInput) userDetails: UserInput,
     @Ctx() context: Context,
   ): Promise<User | null> {
-    console.log(context.session);
     if (!HasPermissions(context, PERMISSIONS.USER)) {
       throw new Error('Error: Unauthorized');
     }

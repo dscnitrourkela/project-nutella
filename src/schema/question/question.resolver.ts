@@ -1,5 +1,5 @@
 // Libraries
-import {Resolver, Query, Arg, Mutation} from 'type-graphql';
+import {Resolver, Query, Arg, Mutation, Ctx} from 'type-graphql';
 import {ObjectID} from 'mongodb';
 
 // Model
@@ -9,6 +9,9 @@ import {QuizModel} from '../quiz/quiz.model';
 // Utils + Types + Scalars
 import {ObjectIdScalar} from '../scalars';
 import {QuestionInput, QuestionUpdateInput} from './question.type';
+import {HasPermissions} from '../../utils/auth';
+import {PERMISSIONS} from '../../constants';
+import {Context} from '../../types/auth';
 
 @Resolver(() => Question)
 export default class QuestionResolvers {
@@ -23,8 +26,12 @@ export default class QuestionResolvers {
   })
   async getQuestions(
     @Arg('ids', () => [ObjectIdScalar], {nullable: 'items'}) ids: ObjectID[],
+    @Ctx() context: Context,
   ): Promise<(Question | null)[]> {
-    // TODO: Use context to allow requests only with the role of admin to proceed ahead
+    if (!HasPermissions(context, PERMISSIONS.USER)) {
+      throw new Error('Error: Unauthorized');
+    }
+
     try {
       if (ids.length === 0) {
         return await QuestionModel.find({});
@@ -50,8 +57,11 @@ export default class QuestionResolvers {
   })
   async getQuestionsForQuiz(
     @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
+    @Ctx() context: Context,
   ): Promise<Promise<Promise<Question | null>[] | undefined>[]> {
-    // TODO: Use context for the appropriate permissions to proceed ahead.
+    if (!HasPermissions(context, PERMISSIONS.USER)) {
+      throw new Error('Error: Unauthorized');
+    }
 
     try {
       if (ids.length && ids.length === 0) {
@@ -84,8 +94,11 @@ export default class QuestionResolvers {
   })
   async createQuestions(
     @Arg('questionDetails', () => [QuestionInput]) questionDetails: Question[],
+    @Ctx() context: Context,
   ): Promise<(Question | null)[]> {
-    // TODO: Use context to check permissions
+    if (!HasPermissions(context, PERMISSIONS.ADMIN)) {
+      throw new Error('Error: Unauthorized');
+    }
 
     try {
       if (questionDetails.length === 0) {
@@ -128,8 +141,11 @@ export default class QuestionResolvers {
   async updateQuestions(
     @Arg('questionDetails', () => [QuestionUpdateInput])
     questionUpdatesArray: QuestionUpdateInput[],
+    @Ctx() context: Context,
   ): Promise<(Question | null)[]> {
-    // TODO: Use context to check permissions
+    if (!HasPermissions(context, PERMISSIONS.ADMIN)) {
+      throw new Error('Error: Unauthorized');
+    }
 
     try {
       if (questionUpdatesArray.length === 0) {
@@ -157,8 +173,12 @@ export default class QuestionResolvers {
   })
   async deleteQuestions(
     @Arg('ids', () => ObjectIdScalar) ids: ObjectID[],
+    @Ctx() context: Context,
   ): Promise<(Question | null)[]> {
-    // TODO: Use context to allow requests only with the role of admin to proceed ahead
+    if (!HasPermissions(context, PERMISSIONS.ADMIN)) {
+      throw new Error('Error: Unauthorized');
+    }
+
     try {
       if (ids.length === 0) {
         throw new Error('Bad Request: Missing Parametes');

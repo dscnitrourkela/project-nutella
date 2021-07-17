@@ -6,6 +6,7 @@ import {
   Root,
   Arg,
   Mutation,
+  Ctx,
 } from 'type-graphql';
 import {ObjectID} from 'mongodb';
 
@@ -17,6 +18,9 @@ import {UserModel} from '../user/user.model';
 // Utils + Types + Scalars
 import {ObjectIdScalar} from '../scalars';
 import {SubmissionResolveType, QuizInput} from './quiz.type';
+import {PERMISSIONS} from '../../constants';
+import {HasPermissions} from '../../utils/auth';
+import {Context} from '../../types/auth.d';
 
 @Resolver(() => Quiz)
 export default class QuizResolvers {
@@ -82,9 +86,12 @@ export default class QuizResolvers {
   })
   async getQuizzes(
     @Arg('ids', () => [ObjectIdScalar], {nullable: 'items'}) ids: ObjectID[],
+    @Ctx() context: Context,
   ): Promise<(Quiz | null)[]> {
     try {
-      // TODO: Use context to allow requests only with the role of user/student to proceed ahead.
+      if (!HasPermissions(context, PERMISSIONS.USER)) {
+        throw new Error('Error: Unauthorized');
+      }
 
       if (!ids || ids.length === 0) {
         return await QuizModel.find({});
@@ -105,8 +112,13 @@ export default class QuizResolvers {
     description:
       'Takes an Object containing quiz properties as parameter, creates a Quiz model in database. If no object passed, a bad request error is thrown.',
   })
-  async createQuiz(@Arg('quizDetails') quizDetails: QuizInput): Promise<Quiz> {
-    // TODO: Use context to allow requests only with the admin role to proceed ahead.
+  async createQuiz(
+    @Arg('quizDetails') quizDetails: QuizInput,
+    @Ctx() context: Context,
+  ): Promise<Quiz> {
+    if (!HasPermissions(context, PERMISSIONS.ADMIN)) {
+      throw new Error('Error: Unauthorized');
+    }
 
     try {
       if (!quizDetails) {
@@ -141,8 +153,11 @@ export default class QuizResolvers {
   async updateQuiz(
     @Arg('quizId', () => ObjectIdScalar) quizId: ObjectID,
     @Arg('quizDetails', () => QuizInput) quizDetails: QuizInput,
+    @Ctx() context: Context,
   ): Promise<Quiz | null> {
-    // TODO: Use context to allow requests only with the admin role to proceed ahead.
+    if (!HasPermissions(context, PERMISSIONS.USER)) {
+      throw new Error('Error: Unauthorized');
+    }
 
     try {
       if (!quizId || !quizDetails) {
@@ -172,8 +187,12 @@ export default class QuizResolvers {
   })
   async deleteQuiz(
     @Arg('quizId', () => ObjectIdScalar) quizId: ObjectID,
+    @Ctx() context: Context,
   ): Promise<Quiz | null> {
-    // TODO: Use context to allow requests only with the role of admin to proceed ahead
+    if (!HasPermissions(context, PERMISSIONS.ADMIN)) {
+      throw new Error('Error: Unauthorized');
+    }
+
     try {
       if (!quizId) {
         throw new Error('Bad Request: Missing Parameters');
