@@ -72,16 +72,18 @@ const MongoDBStore = require('connect-mongodb-session')(Session);
     playground: !IS_PROD,
     debug: !IS_PROD,
     context: async ({req}) => {
-      const authToken =
+      const token =
         req.headers && req.headers.authorization
           ? decodeURI(req.headers.authorization)
           : null;
+
+      const authToken = token?.split(' ')[1];
 
       const decodedToken = authToken
         ? await GetUserAuthScope(req.session, authToken)
         : null;
 
-      const mdbid = decodedToken ? decodedToken.customClaims.mid : null;
+      const mdbid = decodedToken ? decodedToken.customClaims?.mdbid : null;
       const {session} = req;
 
       return {
