@@ -6,6 +6,8 @@ on:
 env:
   AUTH_PROVIDER_X509_CERT_URL: ${{secrets.AUTH_PROVIDER_X509_CERT_URL}}
   AUTH_URI: ${{secrets.AUTH_URI}}
+  CLIENT_ID: ${{secrets.CLIENT_ID}}
+  SESSION_SECRET: ${{secrets.SESSION_SECRET}}
   TYPE: ${{secrets.TYPE}}
   TOKEN_URI: ${{secrets.TOKEN_URI}}
   PROJECT_ID: ${{secrets.PROJECT_ID}}
@@ -39,9 +41,10 @@ jobs:
           touch .env
           echo AUTH_PROVIDER_X509_CERT_URL=$AUTH_PROVIDER_X509_CERT_URL >> .env
           echo AUTH_URI=$AUTH_URI >> .env
+          echo CLIENT_ID=$CLIENT_ID >> .env
+          echo SESSION_SECRET=$SESSION_SECRET >> .env
           echo TYPE=$TYPE >> .env
           echo TOKEN_URI=$TOKEN_URI >> .env
-          echo PROJECT_ID=$PROJECT_ID >> .env
           echo PROJECT_ID=$PROJECT_ID >> .env
           echo PRIVATE_KEY_ID=$PRIVATE_KEY_ID >> .env
           echo PRIVATE_KEY=\"$PRIVATE_KEY\" >> .env
