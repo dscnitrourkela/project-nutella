@@ -8,6 +8,7 @@ import {
   DEV_SOURCE_IP,
   PR_ORIGIN,
   STAGING_ORIGIN,
+  PROD_SERVER,
 } from '../constants';
 
 const WHITELIST = [
@@ -16,6 +17,7 @@ const WHITELIST = [
   DEV_SOURCE,
   STAGING_ORIGIN,
   DEV_SOURCE_IP,
+  PROD_SERVER,
 ];
 
 export default {

@@ -3,6 +3,7 @@ export const {MONGO_APP_URL} = process.env;
 
 export const IS_PROD = process.env.NODE_ENV === 'production';
 export const PROD_ORIGIN = 'https://aptiche-admin.dscnitrourkela.org';
+export const PROD_SERVER = 'https://aptiche.dscnitrourkela.org';
 export const DEV_ORIGIN = 'http://localhost:3000';
 export const DEV_ORIGIN_IP = 'http://127.0.0.1:3000';
 export const DEV_SOURCE = 'http://localhost:8000';
