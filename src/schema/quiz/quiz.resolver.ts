@@ -89,7 +89,7 @@ export default class QuizResolvers {
     @Ctx() context: Context,
   ): Promise<(Quiz | null)[]> {
     try {
-      if (!HasPermissions(context, PERMISSIONS.USER)) {
+      if (!HasPermissions(context, [PERMISSIONS.USER, PERMISSIONS.ADMIN])) {
         throw new Error('Error: Unauthorized');
       }
 
@@ -116,7 +116,7 @@ export default class QuizResolvers {
     @Arg('quizDetails') quizDetails: QuizInput,
     @Ctx() context: Context,
   ): Promise<Quiz> {
-    if (!HasPermissions(context, PERMISSIONS.ADMIN)) {
+    if (!HasPermissions(context, [PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 
@@ -155,7 +155,7 @@ export default class QuizResolvers {
     @Arg('quizDetails', () => QuizInput) quizDetails: QuizInput,
     @Ctx() context: Context,
   ): Promise<Quiz | null> {
-    if (!HasPermissions(context, PERMISSIONS.USER)) {
+    if (!HasPermissions(context, [PERMISSIONS.USER, PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 
@@ -189,7 +189,7 @@ export default class QuizResolvers {
     @Arg('quizId', () => ObjectIdScalar) quizId: ObjectID,
     @Ctx() context: Context,
   ): Promise<Quiz | null> {
-    if (!HasPermissions(context, PERMISSIONS.ADMIN)) {
+    if (!HasPermissions(context, [PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 

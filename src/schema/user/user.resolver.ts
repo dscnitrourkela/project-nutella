@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 // Libraries
 import {
   Resolver,
@@ -54,7 +55,7 @@ export default class UserResolvers {
     ids: ObjectID[],
     @Ctx() context: Context,
   ): Promise<(User | null)[]> {
-    if (!HasPermissions(context, PERMISSIONS.USER)) {
+    if (!HasPermissions(context, [PERMISSIONS.USER, PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 
@@ -87,7 +88,6 @@ export default class UserResolvers {
       throw new Error('Error: Unauthorized');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const uid = context.decodedToken.uid!;
 
     try {
@@ -109,6 +109,9 @@ export default class UserResolvers {
         fcmToken: fcmToken.length > 0 ? fcmToken : [],
         quizzes: quizzes.length > 0 ? quizzes : [],
       });
+
+      // If development mode (i.e. has dev key) return user without saving custom claims
+      if (context.authToken === process.env.DEV_KEY) return user;
 
       await auth().setCustomUserClaims(context.decodedToken.uid, {
         mdbid: user.id,
@@ -140,7 +143,7 @@ export default class UserResolvers {
     @Arg('userDetails', () => UserInput) userDetails: UserInput,
     @Ctx() context: Context,
   ): Promise<User | null> {
-    if (!HasPermissions(context, PERMISSIONS.USER)) {
+    if (!HasPermissions(context, [PERMISSIONS.USER, PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 
@@ -174,7 +177,7 @@ export default class UserResolvers {
     @Arg('userId', () => ObjectIdScalar) userId: ObjectID,
     @Ctx() context: Context,
   ): Promise<User | null> {
-    if (!HasPermissions(context, PERMISSIONS.USER)) {
+    if (!HasPermissions(context, [PERMISSIONS.USER, PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 

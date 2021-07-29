@@ -28,7 +28,7 @@ export default class QuestionResolvers {
     @Arg('ids', () => [ObjectIdScalar], {nullable: 'items'}) ids: ObjectID[],
     @Ctx() context: Context,
   ): Promise<(Question | null)[]> {
-    if (!HasPermissions(context, PERMISSIONS.USER)) {
+    if (!HasPermissions(context, [PERMISSIONS.USER, PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 
@@ -59,7 +59,7 @@ export default class QuestionResolvers {
     @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
     @Ctx() context: Context,
   ): Promise<Promise<Promise<Question | null>[] | undefined>[]> {
-    if (!HasPermissions(context, PERMISSIONS.USER)) {
+    if (!HasPermissions(context, [PERMISSIONS.USER, PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 
@@ -96,7 +96,7 @@ export default class QuestionResolvers {
     @Arg('questionDetails', () => [QuestionInput]) questionDetails: Question[],
     @Ctx() context: Context,
   ): Promise<(Question | null)[]> {
-    if (!HasPermissions(context, PERMISSIONS.ADMIN)) {
+    if (!HasPermissions(context, [PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 
@@ -143,7 +143,7 @@ export default class QuestionResolvers {
     questionUpdatesArray: QuestionUpdateInput[],
     @Ctx() context: Context,
   ): Promise<(Question | null)[]> {
-    if (!HasPermissions(context, PERMISSIONS.ADMIN)) {
+    if (!HasPermissions(context, [PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 
@@ -175,7 +175,7 @@ export default class QuestionResolvers {
     @Arg('ids', () => ObjectIdScalar) ids: ObjectID[],
     @Ctx() context: Context,
   ): Promise<(Question | null)[]> {
-    if (!HasPermissions(context, PERMISSIONS.ADMIN)) {
+    if (!HasPermissions(context, [PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 
