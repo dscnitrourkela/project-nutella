@@ -21,7 +21,7 @@ export class Question {
   question: string;
 
   @Property({required: false, default: ''})
-  @Field({description: 'Image present in the question'})
+  @Field({description: 'Image present in the question', nullable: true})
   image: string;
 
   @Property({required: true})
@@ -39,7 +39,10 @@ export class Question {
   positiveMark: number;
 
   @Property({required: false, default: 0})
-  @Field({description: 'Possible negative marks for the question answer'})
+  @Field({
+    description: 'Possible negative marks for the question answer',
+    nullable: true,
+  })
   negativeMark: number;
 
   @Property({required: true, trim: true})
