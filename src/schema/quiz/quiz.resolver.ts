@@ -7,6 +7,7 @@ import {
   Arg,
   Mutation,
   Ctx,
+  Int,
 } from 'type-graphql';
 import {ObjectID} from 'mongodb';
 
@@ -99,6 +100,48 @@ export default class QuizResolvers {
 
       return await Promise.all(
         ids.map(async quizId => QuizModel.findById(quizId)),
+      );
+    } catch (error) {
+      return error;
+    }
+  }
+
+  @Query(() => [Quiz], {
+    nullable: true,
+    description:
+      'Takes an integer as input and returns live, past and upcoming quizzes',
+  })
+  async getQuizzesByTime(
+    @Arg('int', () => Int) int: number,
+    @Ctx() context: Context,
+  ): Promise<(Quiz | null)[]> {
+    try {
+      if (!HasPermissions(context, [PERMISSIONS.USER, PERMISSIONS.ADMIN])) {
+        throw new Error('Error: Unauthorized');
+      }
+
+      if (!int) {
+        throw new Error('Bad Request: Missing Parameter');
+      }
+
+      const quizzes = await QuizModel.find({});
+      if (int === 1) {
+        return quizzes.filter(
+          ({startTime, endTime}) =>
+            startTime.valueOf() < Date.now() && endTime.valueOf() < Date.now(),
+        );
+      }
+
+      if (int === 2) {
+        return quizzes.filter(
+          ({startTime, endTime}) =>
+            startTime.valueOf() < Date.now() && endTime.valueOf() > Date.now(),
+        );
+      }
+
+      return quizzes.filter(
+        ({startTime, endTime}) =>
+          startTime.valueOf() > Date.now() && endTime.valueOf() > Date.now(),
       );
     } catch (error) {
       return error;
