@@ -8,6 +8,8 @@ env:
   PORT: ${{secrets.PORT}}
   MONGO_APP_URL: ${{secrets.MONGO_APP_URL}}
   SESSION_SECRET: ${{secrets.SESSION_SECRET}}
+  DEV_KEY: ${{secrets.DEV_KEY}}
+  DEV_KEY_EXP: ${{secrets.DEV_KEY_EXP}}
   TYPE: ${{secrets.TYPE}}
   PROJECT_ID: ${{secrets.PROJECT_ID}}
   PRIVATE_KEY_ID: ${{secrets.PRIVATE_KEY_ID}}
@@ -46,6 +48,8 @@ jobs:
           echo PORT=$PORT >> .env
           echo MONGO_APP_URL=$MONGO_APP_URL >> .env
           echo SESSION_SECRET=$SESSION_SECRET >> .env
+          echo DEV_KEY=$DEV_KEY >> .env
+          echo DEV_KEY_EXP=$DEV_KEY_EXP >> .env
           echo TYPE=$TYPE >> .env
           echo PROJECT_ID=$PROJECT_ID >> .env
           echo PRIVATE_KEY_ID=$PRIVATE_KEY_ID >> .env
