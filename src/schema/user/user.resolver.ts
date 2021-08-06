@@ -55,7 +55,6 @@ export default class UserResolvers {
     ids: ObjectID[],
     @Ctx() context: Context,
   ): Promise<(User | null)[]> {
-    console.log(context);
     if (!HasPermissions(context, [PERMISSIONS.USER, PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }

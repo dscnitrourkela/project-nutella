@@ -150,12 +150,6 @@ export const GetUserAuthScope = async (
     if (CheckSession(session, jwt)) return session?.auth?.decodedToken;
 
     // Start Session for development usage
-    console.log(
-      'From GetUserAuthScope',
-      process.env.DEV_KEY,
-      process.env.DEV_KEY_EXP,
-      jwt,
-    );
     if (jwt === process.env.DEV_KEY) {
       const uid = `development-uid-${Math.floor((1 + Math.random()) * 0x10000)
         .toString(16)
