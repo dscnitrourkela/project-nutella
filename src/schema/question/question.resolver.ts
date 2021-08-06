@@ -28,7 +28,7 @@ export default class QuestionResolvers {
     @Arg('ids', () => [ObjectIdScalar], {nullable: 'items'}) ids: ObjectID[],
     @Ctx() context: Context,
   ): Promise<(Question | null)[]> {
-    if (!HasPermissions(context, PERMISSIONS.USER)) {
+    if (!HasPermissions(context, [PERMISSIONS.USER, PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 
@@ -50,7 +50,7 @@ export default class QuestionResolvers {
    * a 2 dimensional array containing the questions for each quiz.
    * If no ids are passed, a bad request error is thrown.
    */
-  @Query(() => [Question], {
+  @Query(() => [[Question]], {
     nullable: true,
     description:
       'Takes an array of Quiz ObjectIDs as a parameter and returns a 2 Dimensional array containing the questions for each quiz. If an empty array/no array is passed a bad request error is thrown',
@@ -58,8 +58,8 @@ export default class QuestionResolvers {
   async getQuestionsForQuiz(
     @Arg('ids', () => [ObjectIdScalar]) ids: ObjectID[],
     @Ctx() context: Context,
-  ): Promise<Promise<Promise<Question | null>[] | undefined>[]> {
-    if (!HasPermissions(context, PERMISSIONS.USER)) {
+  ): Promise<(Question | null)[][]> {
+    if (!HasPermissions(context, [PERMISSIONS.USER, PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 
@@ -71,12 +71,19 @@ export default class QuestionResolvers {
       const quizzes = await Promise.all(
         ids.map(async quizId => QuizModel.findById(quizId)),
       );
-      const questionsArray = quizzes.map(quiz => quiz?.questions);
+      const questionsArray = quizzes
+        .map(quiz => quiz?.questions)
+        .filter(item => item);
 
-      return questionsArray.map(async questions =>
-        questions?.map(async questionId => {
-          const question = await QuestionModel.findById(questionId);
-          return question;
+      return await Promise.all(
+        questionsArray.map(async questions => {
+          const list = await Promise.all(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            questions!.map(async questionId =>
+              QuestionModel.findById(questionId),
+            ),
+          );
+          return list;
         }),
       );
     } catch (error) {
@@ -96,7 +103,7 @@ export default class QuestionResolvers {
     @Arg('questionDetails', () => [QuestionInput]) questionDetails: Question[],
     @Ctx() context: Context,
   ): Promise<(Question | null)[]> {
-    if (!HasPermissions(context, PERMISSIONS.ADMIN)) {
+    if (!HasPermissions(context, [PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 
@@ -143,7 +150,7 @@ export default class QuestionResolvers {
     questionUpdatesArray: QuestionUpdateInput[],
     @Ctx() context: Context,
   ): Promise<(Question | null)[]> {
-    if (!HasPermissions(context, PERMISSIONS.ADMIN)) {
+    if (!HasPermissions(context, [PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 
@@ -175,7 +182,7 @@ export default class QuestionResolvers {
     @Arg('ids', () => ObjectIdScalar) ids: ObjectID[],
     @Ctx() context: Context,
   ): Promise<(Question | null)[]> {
-    if (!HasPermissions(context, PERMISSIONS.ADMIN)) {
+    if (!HasPermissions(context, [PERMISSIONS.ADMIN])) {
       throw new Error('Error: Unauthorized');
     }
 

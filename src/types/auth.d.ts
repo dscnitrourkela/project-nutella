@@ -37,10 +37,10 @@ declare module 'express-session' {
   interface SessionData {
     auth: {
       uid: UID;
-      mdbid: ObjectID;
+      mdbid?: ObjectID;
       jwt: JWT;
       exp: number;
-      role: string;
+      role?: string;
       decodedToken: DecodedToken;
     };
   }

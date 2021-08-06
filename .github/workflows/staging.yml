@@ -3,29 +3,30 @@ name: Staging Deploy
 on:
   push:
     branches: [ main ]
-  
 env:
-  AUTH_PROVIDER_X509_CERT_URL: ${{secrets.AUTH_PROVIDER_X509_CERT_URL}}
-  AUTH_URI: ${{secrets.AUTH_URI}}
-  CLIENT_ID: ${{secrets.CLIENT_ID}}
+  PORT: ${{secrets.PORT}}
+  MONGO_APP_URL: ${{secrets.MONGO_APP_URL}}
   SESSION_SECRET: ${{secrets.SESSION_SECRET}}
+  DEV_KEY: ${{secrets.DEV_KEY}}
+  DEV_KEY_EXP: ${{secrets.DEV_KEY_EXP}}
   TYPE: ${{secrets.TYPE}}
-  TOKEN_URI: ${{secrets.TOKEN_URI}}
   PROJECT_ID: ${{secrets.PROJECT_ID}}
   PRIVATE_KEY_ID: ${{secrets.PRIVATE_KEY_ID}}
   PRIVATE_KEY: ${{secrets.PRIVATE_KEY}}
-  PORT: ${{secrets.PORT}}
-  MONGO_APP_URL: ${{secrets.MONGO_APP_URL}}
-  CLIENT_X509_CERT_URL: ${{secrets.CLIENT_X509_CERT_URL}}
   CLIENT_EMAIL: ${{secrets.CLIENT_EMAIL}}
-  
+  CLIENT_ID: ${{secrets.CLIENT_ID}}
+  AUTH_URI: ${{secrets.AUTH_URI}}
+  TOKEN_URI: ${{secrets.TOKEN_URI}}
+  AUTH_PROVIDER_X509_CERT_URL: ${{secrets.AUTH_PROVIDER_X509_CERT_URL}}
+  CLIENT_X509_CERT_URL: ${{secrets.CLIENT_X509_CERT_URL}}
+
 jobs:
   staging-deploy:
     runs-on: [self-hosted, aptiche-do]
     defaults:
       run:
         shell: bash
-        
+
     strategy:
       matrix:
         node-version: [14.x]
@@ -40,19 +41,21 @@ jobs:
       - name: Create .env File
         run: |
           touch .env
-          echo AUTH_PROVIDER_X509_CERT_URL=$AUTH_PROVIDER_X509_CERT_URL >> .env
-          echo AUTH_URI=$AUTH_URI >> .env
-          echo CLIENT_ID=$CLIENT_ID >> .env
+          echo PORT=$PORT >> .env
+          echo MONGO_APP_URL=$MONGO_APP_URL >> .env
           echo SESSION_SECRET=$SESSION_SECRET >> .env
+          echo DEV_KEY=$DEV_KEY >> .env
+          echo DEV_KEY_EXP=$DEV_KEY_EXP >> .env
           echo TYPE=$TYPE >> .env
-          echo TOKEN_URI=$TOKEN_URI >> .env
           echo PROJECT_ID=$PROJECT_ID >> .env
           echo PRIVATE_KEY_ID=$PRIVATE_KEY_ID >> .env
           echo PRIVATE_KEY=\"$PRIVATE_KEY\" >> .env
-          echo PORT=$PORT >> .env
-          echo MONGO_APP_URL=$MONGO_APP_URL >> .env
-          echo CLIENT_X509_CERT_URL=$CLIENT_X509_CERT_URL >> .env
           echo CLIENT_EMAIL=$CLIENT_EMAIL >> .env
+          echo CLIENT_ID=$CLIENT_ID >> .env
+          echo AUTH_URI=$AUTH_URI >> .env
+          echo TOKEN_URI=$TOKEN_URI >> .env
+          echo AUTH_PROVIDER_X509_CERT_URL=$AUTH_PROVIDER_X509_CERT_URL >> .env
+          echo CLIENT_X509_CERT_URL=$CLIENT_X509_CERT_URL >> .env
           cat .env
       - run: yarn
       - run: tsc

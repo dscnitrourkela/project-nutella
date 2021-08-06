@@ -1,3 +1,7 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 // Libraries
 import {SessionData, Session} from 'express-session';
 import {auth} from '../config/firebase';
@@ -14,7 +18,6 @@ import {JWT, Context} from '../types/auth';
  * @param {JWT} jwt
  * @returns {decodedTokenId} decodedToken
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const AuthenticateUser = async (jwt: JWT) => {
   try {
     return await auth().verifyIdToken(jwt);
@@ -62,7 +65,6 @@ export const StartSession = async (
     if (!decodedToken) throw new Error('Authentication Error');
 
     const {uid, exp, role, mdbid} = decodedToken;
-    // eslint-disable-next-line no-param-reassign
     session.auth = {
       uid,
       mdbid,
@@ -118,15 +120,13 @@ export const EndSession = async (
  */
 export const HasPermissions = (
   context: Context,
-  desiredRole: string,
+  desiredRole: string[],
 ): boolean => {
   if (!context || !context.authToken || !context.session) return false;
   if (!CheckSession(context.session, context.authToken)) return false;
 
   const {role} = context.session.auth;
-  if (role === desiredRole) return true;
-
-  return false;
+  return desiredRole.includes(role);
 };
 
 /**
@@ -141,7 +141,6 @@ export const HasPermissions = (
  * @param {JWT} jwt
  * @returns {DecodedIdToken}
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const GetUserAuthScope = async (
   session: Session & Partial<SessionData>,
   jwt: JWT,
@@ -150,6 +149,29 @@ export const GetUserAuthScope = async (
     if (!jwt) return null;
     if (CheckSession(session, jwt)) return session?.auth?.decodedToken;
 
+    // Start Session for development usage
+    if (jwt === process.env.DEV_KEY) {
+      const uid = `development-uid-${Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1)}`;
+
+      session.auth = {
+        uid,
+        jwt: process.env.DEV_KEY,
+        role: PERMISSIONS.ADMIN,
+        decodedToken: null,
+        exp: parseInt(process.env.DEV_KEY_EXP!, 10),
+      };
+
+      await session.save();
+      return {
+        uid,
+        role: PERMISSIONS.ADMIN,
+        exp: parseInt(process.env.DEV_KEY_EXP!, 10),
+      };
+    }
+
+    // Start the actual session
     const decodedToken = await StartSession(session, jwt);
     if (!decodedToken) throw new Error('Unexpected Error');
 

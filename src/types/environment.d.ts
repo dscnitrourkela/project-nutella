@@ -5,6 +5,9 @@ declare global {
       SESSION_SECRET: string | string[];
       SESSION_KEY: string;
 
+      DEV_KEY: string;
+      DEV_KEY_EXP: string;
+
       TYPE: string;
       PROJECT_ID: string;
       PRIVATE_KEY_ID: string;
