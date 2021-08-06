@@ -2,7 +2,7 @@ name: Staging Deploy
 
 on:
   push:
-
+    branches: [ main ]
 env:
   PORT: ${{secrets.PORT}}
   MONGO_APP_URL: ${{secrets.MONGO_APP_URL}}
