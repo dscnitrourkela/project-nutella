@@ -100,6 +100,11 @@ export default class UserResolvers {
         throw new Error('Bad Request: Missing Parameters');
       }
 
+      const existingUser = await UserModel.findOne({uid});
+      if (existingUser) {
+        throw new Error('Bad Request: User Already Existing');
+      }
+
       const user = await UserModel.create({
         name,
         email,
@@ -117,10 +122,6 @@ export default class UserResolvers {
         mdbid: user.id,
         role: PERMISSIONS.USER,
       });
-
-      context.session.auth.mdbid = user.id;
-      context.session.auth.role = PERMISSIONS.USER;
-      await context.session.save();
 
       return user;
     } catch (error) {
