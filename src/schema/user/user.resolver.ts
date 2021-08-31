@@ -118,7 +118,7 @@ export default class UserResolvers {
       // If development mode (i.e. has dev key) return user without saving custom claims
       if (context.authToken === process.env.DEV_KEY) return user;
 
-      await auth().setCustomUserClaims(context.decodedToken.uid, {
+      auth().setCustomUserClaims(context.decodedToken.uid, {
         mdbid: user.id,
         role: PERMISSIONS.USER,
       });
