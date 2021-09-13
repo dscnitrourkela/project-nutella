@@ -1,4 +1,6 @@
 # project-nutella
+[![Staging Deploy](https://github.com/dscnitrourkela/project-nutella/actions/workflows/staging.yml/badge.svg)](https://github.com/dscnitrourkela/project-nutella/actions/workflows/staging.yml)
+[![PR Build Deploy](https://github.com/dscnitrourkela/project-nutella/actions/workflows/pr-build.yml/badge.svg)](https://github.com/dscnitrourkela/project-nutella/actions/workflows/pr-build.yml)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
@@ -16,7 +18,7 @@
   <h3 align="center">project-nutella</h3>
 
   <p align="center">
-    A cli to configure and create a react-app
+    Apollo GraphQL server for <a href="https://github.com/dscnitrourkela/project-maple">aptiche</a>
     <br />
     <br />
     <a href="https://github.com/dscnitrourkela/project-nutella">View Docs</a>
