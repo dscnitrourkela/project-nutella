@@ -73,6 +73,40 @@ export default class UserResolvers {
   }
 
   /*
+    getUserByPhone query takes a phoneNumber as a parameter and returns the
+    corresponding user
+  */
+  @Query(() => User, {
+    nullable: true,
+    description:
+      'Takes an array of User ObjectIDs as a parameter and returns an array of corresponding users. If an empty array is passed, All the users are returned.',
+  })
+  async getUserByPhone(
+    @Arg('phoneNo')
+    phoneNo: string,
+    @Ctx() context: Context,
+  ): Promise<User | null> {
+    if (!HasPermissions(context, [PERMISSIONS.USER, PERMISSIONS.ADMIN])) {
+      throw new Error('Error: Unauthorized');
+    }
+
+    if (!phoneNo) {
+      throw new Error('Bad Request: Missing Parameter');
+    }
+
+    try {
+      const user = await UserModel.findOne({phoneNo});
+      if (!user) {
+        throw new Error('Bad Request: User not found');
+      }
+
+      return user;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /*
     createUser mutation takes an object of user properties as a parameter and creates a new user.
     The created user is then returned
   */
