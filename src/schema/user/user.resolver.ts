@@ -48,7 +48,7 @@ export default class UserResolvers {
   @Query(() => [User], {
     nullable: true,
     description:
-      'Takes an array of User ObjectIDs as a parameter and returns an array of corresponding users. If an empty array is passed, All the users are returned.',
+      'Takes a phoneNumber as a parameter and returns the corresponding user',
   })
   async getUsers(
     @Arg('ids', () => [ObjectID], {nullable: 'items'})
