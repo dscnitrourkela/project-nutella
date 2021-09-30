@@ -48,7 +48,7 @@ export default class UserResolvers {
   @Query(() => [User], {
     nullable: true,
     description:
-      'Takes an array of User ObjectIDs as a parameter and returns an array of corresponding users. If an empty array is passed, All the users are returned.',
+      'Takes a phoneNumber as a parameter and returns the corresponding user',
   })
   async getUsers(
     @Arg('ids', () => [ObjectID], {nullable: 'items'})
@@ -67,6 +67,40 @@ export default class UserResolvers {
       return await Promise.all(
         ids.map(async userId => UserModel.findById(userId)),
       );
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /*
+    getUserByPhone query takes a phoneNumber as a parameter and returns the
+    corresponding user
+  */
+  @Query(() => User, {
+    nullable: true,
+    description:
+      'Takes an array of User ObjectIDs as a parameter and returns an array of corresponding users. If an empty array is passed, All the users are returned.',
+  })
+  async getUserByPhone(
+    @Arg('phoneNo')
+    phoneNo: string,
+    @Ctx() context: Context,
+  ): Promise<User | null> {
+    if (!HasPermissions(context, [PERMISSIONS.USER, PERMISSIONS.ADMIN])) {
+      throw new Error('Error: Unauthorized');
+    }
+
+    if (!phoneNo) {
+      throw new Error('Bad Request: Missing Parameter');
+    }
+
+    try {
+      const user = await UserModel.findOne({phoneNo});
+      if (!user) {
+        throw new Error('Bad Request: User not found');
+      }
+
+      return user;
     } catch (error) {
       return error;
     }
